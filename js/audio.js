@@ -52,25 +52,37 @@ function play() {
         wireframe: true
     });
 
-    var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.rotation.x = -0.5 * Math.PI;
-    plane.position.set(0, 30, 0);
-    group.add(plane);
+    // var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    // plane.rotation.x = -0.5 * Math.PI;
+    // plane.position.set(0, 30, 0);
+    // group.add(plane);
 
     var plane2 = new THREE.Mesh(planeGeometry, planeMaterial);
     plane2.rotation.x = -0.5 * Math.PI;
     plane2.position.set(0, -30, 0);
     group.add(plane2);
 
-    var icosahedronGeometry = new THREE.IcosahedronGeometry(10, 4);
+    // DALE ADDED THIS
+    // build the base geometry for each building
+    var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+    // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
     var lambertMaterial = new THREE.MeshLambertMaterial({
         color: 0xff00ee,
         wireframe: true
     });
+    var cube = new THREE.Mesh( geometry, lambertMaterial);
+    cube.position.set(0, 0, 0);
+    group.add(cube);
 
-    var ball = new THREE.Mesh(icosahedronGeometry, lambertMaterial);
-    ball.position.set(0, 0, 0);
-    group.add(ball);
+    // var icosahedronGeometry = new THREE.IcosahedronGeometry(10, 4);
+    // var lambertMaterial = new THREE.MeshLambertMaterial({
+    //     color: 0xff00ee,
+    //     wireframe: true
+    // });
+
+    // var ball = new THREE.Mesh(icosahedronGeometry, lambertMaterial);
+    // ball.position.set(0, 0, 0);
+    // group.add(ball);
 
     var ambientLight = new THREE.AmbientLight(0xaaaaaa);
     scene.add(ambientLight);
@@ -78,7 +90,7 @@ function play() {
     var spotLight = new THREE.SpotLight(0xffffff);
     spotLight.intensity = 0.9;
     spotLight.position.set(-10, 40, 20);
-    spotLight.lookAt(ball);
+    spotLight.lookAt(cube); // ball
     spotLight.castShadow = true;
     scene.add(spotLight);
 
@@ -110,10 +122,10 @@ function play() {
       var upperMaxFr = upperMax / upperHalfArray.length;
       var upperAvgFr = upperAvg / upperHalfArray.length;
 
-      makeRoughGround(plane, modulate(upperAvgFr, 0, 1, 0.5, 4));
-      makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
+      // makeRoughGround(plane, modulate(upperAvgFr, 0, 1, 0.5, 4));
+      // makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
 
-      makeRoughBall(ball, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
+      makeRoughBall(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
 
       group.rotation.y += 0.005;
       renderer.render(scene, camera);
@@ -127,8 +139,9 @@ function play() {
     }
 
     function makeRoughBall(mesh, bassFr, treFr) {
+        // debugger;
         mesh.geometry.vertices.forEach(function (vertex, i) {
-            var offset = mesh.geometry.parameters.radius;
+            var offset = mesh.geometry.parameters.width;
             var amp = 7;
             var time = window.performance.now();
             vertex.normalize();
