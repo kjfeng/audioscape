@@ -41,13 +41,13 @@ html, body{
 audio {
   position: fixed;
   left: 10px;
-  bottom: -10px;
+  bottom: 10px;
   width: calc(100% - 20px);
 }
 
-audio.active{
+/* audio.active{
   bottom: 10px;
-}
+} */
 
 #thefile{
   width: 0.1px;
