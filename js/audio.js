@@ -57,10 +57,10 @@ function play() {
     // plane.position.set(0, 30, 0);
     // group.add(plane);
 
-    var plane2 = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane2.rotation.x = -0.5 * Math.PI;
-    plane2.position.set(0, -30, 0);
-    group.add(plane2);
+    // var plane2 = new THREE.Mesh(planeGeometry, planeMaterial);
+    // plane2.rotation.x = -0.5 * Math.PI;
+    // plane2.position.set(0, -30, 0);
+    // group.add(plane2);
 
     // DALE ADDED THIS
     // build the base geometry for each building
@@ -127,7 +127,8 @@ function play() {
 
       makeRoughBall(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
 
-      group.rotation.y += 0.005;
+      // CONTROLS AUTO ROTATION
+      // group.rotation.y += 0.005;
       renderer.render(scene, camera);
       requestAnimationFrame(render);
     }
