@@ -77,7 +77,7 @@ function play() {
 
     // DALE ADDED THIS FOR THE CITY
     var geometry = new THREE.CubeGeometry( 1, 1, 1 );
-    
+
     var cityGeometry= new THREE.Geometry();
 
     for( var i = 0; i < 20000; i ++ ){
@@ -101,7 +101,7 @@ function play() {
         // var topColor    = baseColor.clone().multiply( light );
         // var bottomColor = baseColor.clone().multiply( shadow );
         // // set .vertexColors for each face
-        // var geometry    = buildingMesh.geometry;        
+        // var geometry    = buildingMesh.geometry;
         // for ( var j = 0, jl = geometry.faces.length; j < jl; j ++ ) {
         //     if ( j === 2 ) {
         //         // set face.vertexColors on root face
@@ -115,7 +115,7 @@ function play() {
         // THREE.GeometryUtils.merge( cityGeometry, buildingMesh );
         group.add(buildingMesh);
     }
-    
+
 
     // var icosahedronGeometry = new THREE.IcosahedronGeometry(10, 4);
     // var lambertMaterial = new THREE.MeshLambertMaterial({
@@ -183,7 +183,6 @@ function play() {
     }
 
     function makeRoughBall(mesh, bassFr, treFr) {
-        // debugger;
         mesh.geometry.vertices.forEach(function (vertex, i) {
             var offset = mesh.geometry.parameters.width;
             var amp = 7;
