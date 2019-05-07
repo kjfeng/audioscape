@@ -66,7 +66,7 @@ label.file{
   transform: translate3d(-50%, -50%, 0);
   padding: 1rem 2rem;
   border-radius: 4px;
-  
+
   background: var(--paperColor);
   color: var(--textColor);
   font-size: 1.25em;
