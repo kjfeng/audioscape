@@ -1,4 +1,3 @@
-// small change dale made
 //initialise simplex noise instance
 var noise = new SimplexNoise();
 
@@ -80,6 +79,7 @@ function play() {
     var geometry = new THREE.CubeGeometry( 1, 1, 1 );
 
     var cityGeometry= new THREE.Geometry();
+    var buildings = [];
 
     for( var i = 0; i < 20000; i ++ ){
         // buildMesh
@@ -114,6 +114,7 @@ function play() {
         // }
         // merge it with cityGeometry - very important for performance
         // THREE.GeometryUtils.merge( cityGeometry, buildingMesh );
+        buildings.push(buildingMesh);
         group.add(buildingMesh);
     }
 
@@ -169,7 +170,9 @@ function play() {
       // makeRoughGround(plane, modulate(upperAvgFr, 0, 1, 0.5, 4));
       // makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
 
-      // makeRoughBall(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
+      for (var i = 0; i < buildings.length; i ++ ) {
+        makeRoughBall(buildings[i], modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
+    }
 
       // CONTROLS AUTO ROTATION
       // group.rotation.y += 0.005;
@@ -182,6 +185,23 @@ function play() {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
+    // // trying to change so that only updates height
+    // function makeRoughBall(mesh, bassFr, treFr) {
+    //     // mesh.geometry.vertices.forEach(function (vertex, i) {
+    //         vertex = mesh.geometry.vertices[1];
+    //         var offset = mesh.geometry.parameters.width;
+    //         var amp = 7;
+    //         var time = window.performance.now();
+    //         vertex.normalize();
+    //         var rf = 0.00001;
+    //         var distance = (offset + bassFr ) + noise.noise3D(vertex.x + time *rf*7, vertex.y +  time*rf*8, vertex.z + time*rf*9) * amp * treFr;
+    //         mesh.geometry.parameters.height.multiplyScalar(distance);
+    //     // });
+    //     mesh.geometry.verticesNeedUpdate = true;
+    //     mesh.geometry.normalsNeedUpdate = true;
+    //     mesh.geometry.computeVertexNormals();
+    //     mesh.geometry.computeFaceNormals();
+    // }
 
     function makeRoughBall(mesh, bassFr, treFr) {
         mesh.geometry.vertices.forEach(function (vertex, i) {
