@@ -1,3 +1,4 @@
+// small change dale made
 //initialise simplex noise instance
 var noise = new SimplexNoise();
 
