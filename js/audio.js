@@ -62,17 +62,60 @@ function play() {
     // plane2.position.set(0, -30, 0);
     // group.add(plane2);
 
-    // DALE ADDED THIS
-    // build the base geometry for each building
-    var geometry = new THREE.BoxGeometry( 20, 20, 20 );
-    // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-    var lambertMaterial = new THREE.MeshLambertMaterial({
-        color: 0xff00ee,
-        wireframe: true
-    });
-    var cube = new THREE.Mesh( geometry, lambertMaterial);
-    cube.position.set(0, 0, 0);
-    group.add(cube);
+    // // DALE ADDED THIS
+    // // build the base geometry for each building
+    // var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+    // // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+    // var lambertMaterial = new THREE.MeshLambertMaterial({
+    //     color: 0xff00ee,
+    //     wireframe: true
+    // });
+    // var cube = new THREE.Mesh( geometry, lambertMaterial);
+    // cube.position.set(0, 0, 0);
+    // group.add(cube);
+
+
+    // DALE ADDED THIS FOR THE CITY
+    var geometry = new THREE.CubeGeometry( 1, 1, 1 );
+    
+    var cityGeometry= new THREE.Geometry();
+
+    for( var i = 0; i < 20000; i ++ ){
+        // buildMesh
+        var buildingMesh= new THREE.Mesh( geometry );
+        // put a random position
+        buildingMesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
+        buildingMesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
+        // put a random rotation
+        buildingMesh.rotation.y = Math.random()*Math.PI*2;
+        // put a random scale
+        // MODIFY THIS FOR BUILDING SIZE?
+        buildingMesh.scale.x    = Math.random() * Math.random() * Math.random() * Math.random() * 50 + 10;
+        buildingMesh.scale.y    = (Math.random() * Math.random() * Math.random() * buildingMesh.scale.x) * 8 + 8;
+        buildingMesh.scale.z    = buildingMesh.scale.x
+
+        // // establish the base color for the buildingMesh
+        // var value   = 1 - Math.random() * Math.random();
+        // var baseColor   = new THREE.Color().setRGB( value + Math.random() * 0.1, value, value + Math.random() * 0.1 );
+        // // set topColor/bottom vertexColors as adjustement of baseColor
+        // var topColor    = baseColor.clone().multiply( light );
+        // var bottomColor = baseColor.clone().multiply( shadow );
+        // // set .vertexColors for each face
+        // var geometry    = buildingMesh.geometry;        
+        // for ( var j = 0, jl = geometry.faces.length; j < jl; j ++ ) {
+        //     if ( j === 2 ) {
+        //         // set face.vertexColors on root face
+        //         geometry.faces[ j ].vertexColors = [ baseColor, baseColor, baseColor, baseColor ];
+        //     } else {
+        //         // set face.vertexColors on sides faces
+        //         geometry.faces[ j ].vertexColors = [ topColor, bottomColor, bottomColor, topColor ];
+        //     }
+        // }
+        // merge it with cityGeometry - very important for performance
+        // THREE.GeometryUtils.merge( cityGeometry, buildingMesh );
+        group.add(buildingMesh);
+    }
+    
 
     // var icosahedronGeometry = new THREE.IcosahedronGeometry(10, 4);
     // var lambertMaterial = new THREE.MeshLambertMaterial({
@@ -90,7 +133,7 @@ function play() {
     var spotLight = new THREE.SpotLight(0xffffff);
     spotLight.intensity = 0.9;
     spotLight.position.set(-10, 40, 20);
-    spotLight.lookAt(cube); // ball
+    // spotLight.lookAt(cube); // ball
     spotLight.castShadow = true;
     scene.add(spotLight);
 
@@ -125,7 +168,7 @@ function play() {
       // makeRoughGround(plane, modulate(upperAvgFr, 0, 1, 0.5, 4));
       // makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
 
-      makeRoughBall(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
+      // makeRoughBall(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
 
       // CONTROLS AUTO ROTATION
       // group.rotation.y += 0.005;
