@@ -224,7 +224,6 @@ function play() {
     // }
 
     function varyBuildingHeight(mesh, bassFr, treFr, initialY) {
-
         // mesh.geometry.vertices.forEach(function (vertex, i) {
             var offset = mesh.geometry.parameters.width;
             var amp = 7;
@@ -241,10 +240,16 @@ function play() {
             }
             height = mesh.geometry.parameters.height;
             var rf = 0.00001;
-            var distance = (offset + bassFr ) + noise.noise3D(topVertices[0].x + time *rf*7, topVertices[0].y +  time*rf*8, topVertices[0].z + time*rf*9) * amp * treFr;
-            // var distance = (offset + bassFr );
+            debugger;
+            // var distance = (offset + bassFr ) + noise.noise3D(topVertices[0].x + time *rf*7, topVertices[0].y +  time*rf*8, topVertices[0].z + time*rf*9) * amp * treFr;
+
+            var distance = bassFr + treFr;
+
             for (let i = 0; i < 4; i++) {
-              topVertices[i].y *= distance;
+              topVertices[i].y *= (distance * 0.1);
+              if (topVertices[i].y < initialY) {
+                topVertices[i].y = initialY;
+              }
             }
 
             // mesh.geometry.parameters.height = height * 0;
