@@ -64,7 +64,7 @@ function play() {
 
     // DALE ADDED THIS
     // build the base geometry for each building
-    var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+    var geometry = new THREE.BoxGeometry( 1, 1, 1 );
     // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
     var lambertMaterial = new THREE.MeshLambertMaterial({
         color: 0xff00ee,
@@ -77,63 +77,62 @@ function play() {
     var initialYTemp = 1;
 
 
-    // DALE ADDED THIS FOR THE CITY
-    var geometry = new THREE.CubeGeometry( 20, 30, 20 );
-    geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
+    // // DALE ADDED THIS FOR THE CITY
+    // var geometry = new THREE.CubeGeometry( 1, 1, 1 );
+    // geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
 
     // translate the geometry to place the pivot point at the bottom instead of the center
-    // geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
-    // // get rid of the bottom face - it is never seen
-    // geometry.faces.splice( 3, 1 );
-    // geometry.faceVertexUvs[0].splice( 3, 1 );
-    // // change UVs for the top face
-    // // - it is the roof so it wont use the same texture as the side of the building
-    // // - set the UVs to the single coordinate 0,0. so the roof will be the same color
-    // //   as a floor row.
+    geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
+    // get rid of the bottom face - it is never seen
+    geometry.faces.splice( 3, 1 );
+    geometry.faceVertexUvs[0].splice( 3, 1 );
+    // change UVs for the top face
+    // - it is the roof so it wont use the same texture as the side of the building
+    // - set the UVs to the single coordinate 0,0. so the roof will be the same color
+    //   as a floor row.
     // geometry.faceVertexUvs[0][2][0].set( 0, 0 );
     // geometry.faceVertexUvs[0][2][1].set( 0, 0 );
     // geometry.faceVertexUvs[0][2][2].set( 0, 0 );
     // geometry.faceVertexUvs[0][2][3].set( 0, 0 );
 
-    // var cityGeometry= new THREE.Geometry();
-    // var buildings = [];
+    var cityGeometry= new THREE.Geometry();
+    var buildings = [];
 
-    // for( var i = 0; i < 20000; i ++ ){
-        // buildMesh
-        // var buildingMesh= new THREE.Mesh( geometry );
-        // // put a random position
-        // buildingMesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
-        // buildingMesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
-        // // put a random rotation
-        // buildingMesh.rotation.y = Math.random()*Math.PI*2;
-        // // put a random scale
-        // // MODIFY THIS FOR BUILDING SIZE?
-        // buildingMesh.scale.x    = Math.random() * Math.random() * Math.random() * Math.random() * 50 + 10;
-        // buildingMesh.scale.y    = (Math.random() * Math.random() * Math.random() * buildingMesh.scale.x) * 8 + 8;
-        // buildingMesh.scale.z    = buildingMesh.scale.x;
+    for( var i = 0; i < 20000; i++ ){
+        var buildingMesh= new THREE.Mesh( geometry );
+        // put a random position
+        buildingMesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
+        buildingMesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
+        // put a random rotation
+        buildingMesh.rotation.y = Math.random()*Math.PI*2;
+        // put a random scale
+        // MODIFY THIS FOR BUILDING SIZE?
+        buildingMesh.scale.x    = Math.random() * Math.random() * Math.random() * Math.random() * 50 + 10;
+        buildingMesh.scale.y    = (Math.random() * Math.random() * Math.random() * buildingMesh.scale.x) * 8 + 8;
+        buildingMesh.scale.z    = buildingMesh.scale.x;
 
-        // // // establish the base color for the buildingMesh
-        // // var value   = 1 - Math.random() * Math.random();
-        // // var baseColor   = new THREE.Color().setRGB( value + Math.random() * 0.1, value, value + Math.random() * 0.1 );
-        // // // set topColor/bottom vertexColors as adjustement of baseColor
-        // // var topColor    = baseColor.clone().multiply( light );
-        // // var bottomColor = baseColor.clone().multiply( shadow );
-        // // // set .vertexColors for each face
-        // // var geometry    = buildingMesh.geometry;
-        // // for ( var j = 0, jl = geometry.faces.length; j < jl; j ++ ) {
-        // //     if ( j === 2 ) {
-        // //         // set face.vertexColors on root face
-        // //         geometry.faces[ j ].vertexColors = [ baseColor, baseColor, baseColor, baseColor ];
-        // //     } else {
-        // //         // set face.vertexColors on sides faces
-        // //         geometry.faces[ j ].vertexColors = [ topColor, bottomColor, bottomColor, topColor ];
-        // //     }
-        // // }
-        // // merge it with cityGeometry - very important for performance
-        // // THREE.GeometryUtils.merge( cityGeometry, buildingMesh );
-        // buildings.push(buildingMesh);
-        // group.add(buildingMesh);
-    // }
+        // // establish the base color for the buildingMesh
+        // var value   = 1 - Math.random() * Math.random();
+        // var baseColor   = new THREE.Color().setRGB( value + Math.random() * 0.1, value, value + Math.random() * 0.1 );
+        // // set topColor/bottom vertexColors as adjustement of baseColor
+        // var topColor    = baseColor.clone().multiply( light );
+        // var bottomColor = baseColor.clone().multiply( shadow );
+        // // set .vertexColors for each face
+        // var geometry    = buildingMesh.geometry;
+        // for ( var j = 0, jl = geometry.faces.length; j < jl; j ++ ) {
+        //     if ( j === 2 ) {
+        //         // set face.vertexColors on root face
+        //         geometry.faces[ j ].vertexColors = [ baseColor, baseColor, baseColor, baseColor ];
+        //     } else {
+        //         // set face.vertexColors on sides faces
+        //         geometry.faces[ j ].vertexColors = [ topColor, bottomColor, bottomColor, topColor ];
+        //     }
+        // }
+        // merge it with cityGeometry - very important for performance
+        // THREE.GeometryUtils.merge( cityGeometry, buildingMesh );
+        buildings.push(buildingMesh);
+        group.add(buildingMesh);
+    }
 
 
     // var icosahedronGeometry = new THREE.IcosahedronGeometry(10, 4);
@@ -186,10 +185,14 @@ function play() {
 
       // makeRoughGround(plane, modulate(upperAvgFr, 0, 1, 0.5, 4));
       // makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
-      varyBuildingHeight(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4), initialYTemp);
-    //   for (var i = 0; i < buildings.length; i ++ ) {
-    //     makeRoughBall(buildings[i], modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
-    // }
+
+      // ONE CUBE
+      // varyBuildingHeight(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4), initialYTemp);
+
+      // CITY
+      for (var i = 0; i < buildings.length; i ++ ) {
+        varyBuildingHeight(buildings[i], modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4), 1);
+    }
 
       // CONTROLS AUTO ROTATION
       // group.rotation.y += 0.005;
@@ -238,7 +241,8 @@ function play() {
             }
             height = mesh.geometry.parameters.height;
             var rf = 0.00001;
-            var distance = (offset + bassFr ) + noise.noise3D(height + time *rf*7, height +  time*rf*8, height + time*rf*9) * amp * treFr;
+            var distance = (offset + bassFr ) + noise.noise3D(topVertices[0].x + time *rf*7, topVertices[0].y +  time*rf*8, topVertices[0].z + time*rf*9) * amp * treFr;
+            // var distance = (offset + bassFr );
             for (let i = 0; i < 4; i++) {
               topVertices[i].y *= distance;
             }
