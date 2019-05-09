@@ -77,6 +77,21 @@ function play() {
 
     // DALE ADDED THIS FOR THE CITY
     var geometry = new THREE.CubeGeometry( 1, 1, 1 );
+    geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
+
+    // translate the geometry to place the pivot point at the bottom instead of the center
+    // geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
+    // // get rid of the bottom face - it is never seen
+    // geometry.faces.splice( 3, 1 );
+    // geometry.faceVertexUvs[0].splice( 3, 1 );
+    // // change UVs for the top face
+    // // - it is the roof so it wont use the same texture as the side of the building
+    // // - set the UVs to the single coordinate 0,0. so the roof will be the same color
+    // //   as a floor row.
+    // geometry.faceVertexUvs[0][2][0].set( 0, 0 );
+    // geometry.faceVertexUvs[0][2][1].set( 0, 0 );
+    // geometry.faceVertexUvs[0][2][2].set( 0, 0 );
+    // geometry.faceVertexUvs[0][2][3].set( 0, 0 );
 
     var cityGeometry= new THREE.Geometry();
     var buildings = [];
@@ -93,7 +108,7 @@ function play() {
         // MODIFY THIS FOR BUILDING SIZE?
         buildingMesh.scale.x    = Math.random() * Math.random() * Math.random() * Math.random() * 50 + 10;
         buildingMesh.scale.y    = (Math.random() * Math.random() * Math.random() * buildingMesh.scale.x) * 8 + 8;
-        buildingMesh.scale.z    = buildingMesh.scale.x
+        buildingMesh.scale.z    = buildingMesh.scale.x;
 
         // // establish the base color for the buildingMesh
         // var value   = 1 - Math.random() * Math.random();
@@ -204,15 +219,21 @@ function play() {
     // }
 
     function makeRoughBall(mesh, bassFr, treFr) {
-        mesh.geometry.vertices.forEach(function (vertex, i) {
+
+        // mesh.geometry.vertices.forEach(function (vertex, i) {
             var offset = mesh.geometry.parameters.width;
             var amp = 7;
             var time = window.performance.now();
-            vertex.normalize();
+            // vertex = mesh.geometry.vertices[1];
+            // vertex.normalize();
+            height = mesh.geometry.parameters.height;
             var rf = 0.00001;
-            var distance = (offset + bassFr ) + noise.noise3D(vertex.x + time *rf*7, vertex.y +  time*rf*8, vertex.z + time*rf*9) * amp * treFr;
-            vertex.multiplyScalar(distance);
-        });
+            var distance = (offset + bassFr ) + noise.noise3D(height + time *rf*7, height +  time*rf*8, height + time*rf*9) * amp * treFr;
+            // vertex.multiplyScalar(distance);
+            
+            mesh.geometry.parameters.height = height * 0;
+            // mesh.geometry.parameters.height.multiplyScalar(distance);
+        // });
         mesh.geometry.verticesNeedUpdate = true;
         mesh.geometry.normalsNeedUpdate = true;
         mesh.geometry.computeVertexNormals();
