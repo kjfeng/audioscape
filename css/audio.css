@@ -45,9 +45,9 @@ audio {
   width: calc(100% - 20px);
 }
 
-/* audio.active{
-  bottom: 10px;
-} */
+audio.active{
+  outline: none;
+}
 
 #thefile{
   width: 0.1px;
