@@ -70,13 +70,15 @@ function play() {
         color: 0xff00ee,
         wireframe: true
     });
-    var cube = new THREE.Mesh( geometry, lambertMaterial);
+    var cube = new THREE.Mesh(geometry, lambertMaterial);
     cube.position.set(0, 0, 0);
     group.add(cube);
+    // don't know why 1 works, but seems to get shape back into original size
+    var initialYTemp = 1;
 
 
     // DALE ADDED THIS FOR THE CITY
-    var geometry = new THREE.CubeGeometry( 20, 20, 20 );
+    var geometry = new THREE.CubeGeometry( 20, 30, 20 );
     geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
 
     // translate the geometry to place the pivot point at the bottom instead of the center
@@ -184,8 +186,7 @@ function play() {
 
       // makeRoughGround(plane, modulate(upperAvgFr, 0, 1, 0.5, 4));
       // makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
-
-      makeRoughBall(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
+      varyBuildingHeight(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4), initialYTemp);
     //   for (var i = 0; i < buildings.length; i ++ ) {
     //     makeRoughBall(buildings[i], modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
     // }
@@ -219,26 +220,28 @@ function play() {
     //     mesh.geometry.computeFaceNormals();
     // }
 
-    function makeRoughBall(mesh, bassFr, treFr) {
-        // debugger;
+    function varyBuildingHeight(mesh, bassFr, treFr, initialY) {
 
         // mesh.geometry.vertices.forEach(function (vertex, i) {
             var offset = mesh.geometry.parameters.width;
             var amp = 7;
             var time = window.performance.now();
             // vertex = mesh.geometry.vertices[1];
-            mesh.geometry.vertices[0].normalize();
-            mesh.geometry.vertices[1].normalize();
-            mesh.geometry.vertices[4].normalize();
-            mesh.geometry.vertices[5].normalize();
-            
+            var topVertices = [
+              mesh.geometry.vertices[0],
+              mesh.geometry.vertices[1],
+              mesh.geometry.vertices[4],
+              mesh.geometry.vertices[5]
+            ];
+            for (let i = 0; i < 4; i++) {
+              topVertices[i].y = initialY;
+            }
             height = mesh.geometry.parameters.height;
             var rf = 0.00001;
             var distance = (offset + bassFr ) + noise.noise3D(height + time *rf*7, height +  time*rf*8, height + time*rf*9) * amp * treFr;
-            mesh.geometry.vertices[0].y *= distance;
-            mesh.geometry.vertices[1].y *= distance;
-            mesh.geometry.vertices[4].y *= distance;
-            mesh.geometry.vertices[5].y *= distance;
+            for (let i = 0; i < 4; i++) {
+              topVertices[i].y *= distance;
+            }
 
             // mesh.geometry.parameters.height = height * 0;
             // mesh.geometry.parameters.height.multiplyScalar(distance);
