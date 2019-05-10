@@ -18,8 +18,8 @@ html, body{
   overflow: hidden;
   height: 100vh;
   width: 100vw;
-  background: var(--bgColor);
-  background: linear-gradient(135deg, var(--bgColor), var(--bgColorLight));
+  background: #ff0000;
+  background: linear-gradient(150deg, #e2f1ff, #e0efff);
   color: var(--textColor);
   font-family: 'Roboto', sans-serif;
   position: relative;
