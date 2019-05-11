@@ -56,14 +56,6 @@ function play() {
     camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 3000 );
     camera.position.y = 80;
 
-    controls = new THREE.FirstPersonControls( camera );
-    controls.movementSpeed = 20;
-    controls.lookSpeed = 0.05;
-    controls.lookVertical = true;
-    updateFcts.push(function(delta, now){
-        controls.update( delta );       
-    })
-
     var planeGeometry = new THREE.PlaneGeometry(800, 800, 20, 20);
     var planeMaterial = new THREE.MeshLambertMaterial({
         color: 0x6904ce,
@@ -241,8 +233,17 @@ function generateTexture() {
     spotLight.castShadow = true;
     scene.add(spotLight);
 
-    var orbitControls = new THREE.OrbitControls(camera);
-    orbitControls.autoRotate = true;
+    // var orbitControls = new THREE.OrbitControls(camera);
+    // orbitControls.autoRotate = true;
+
+    controls = new THREE.FirstPersonControls( camera );
+    controls.movementSpeed = 20;
+    controls.lookSpeed = 0.05;
+    controls.lookVertical = true;
+    // updateFcts.push(function(delta, now){
+    //     controls.update( delta );       
+    // })
+
 
     scene.add(group);
 
@@ -284,6 +285,22 @@ function generateTexture() {
       // group.rotation.y += 0.005;
       renderer.render(scene, camera);
       requestAnimationFrame(render);
+      requestAnimationFrame(animate );
+
+      // var lastTimeMsec= null
+      // requestAnimationFrame(function animate(nowMsec){
+      //     // keep looping
+      //     // requestAnimationFrame(render);
+      //     requestAnimationFrame( animate );
+      //     // measure time
+      //     lastTimeMsec    = lastTimeMsec || nowMsec-1000/60
+      //     var deltaMsec   = Math.min(200, nowMsec - lastTimeMsec)
+      //     lastTimeMsec    = nowMsec
+      //     // call each update function
+      //     updateFcts.forEach(function(updateFn){
+      //         updateFn(deltaMsec/1000, nowMsec/1000)
+      //     })
+      // })
 
       updateFcts.push(function(){
         renderer.render( scene, camera );       
@@ -372,12 +389,12 @@ window.onload = vizInit();
 document.body.addEventListener('touchend', function(ev) { context.resume(); });
 
 function animate() {
-    requestAnimationFrame( animate );
+    // requestAnimationFrame( animate );
 
     var time = performance.now() / 1000;
 
     controls.update( time - lastTime );
-    renderer.render( scene, camera );
+    // renderer.render( scene, camera );
 
     lastTime = time;
 
@@ -386,19 +403,19 @@ function animate() {
 //////////////////////////////////////////////////////////////////////////////////
 //      loop runner                         //
 //////////////////////////////////////////////////////////////////////////////////
-var lastTimeMsec= null
-    requestAnimationFrame(function animate(nowMsec){
-        // keep looping
-        requestAnimationFrame( animate );
-        // measure time
-        lastTimeMsec    = lastTimeMsec || nowMsec-1000/60
-        var deltaMsec   = Math.min(200, nowMsec - lastTimeMsec)
-        lastTimeMsec    = nowMsec
-        // call each update function
-        updateFcts.forEach(function(updateFn){
-            updateFn(deltaMsec/1000, nowMsec/1000)
-        })
-    })
+// var lastTimeMsec= null
+//     requestAnimationFrame(function animate(nowMsec){
+//         // keep looping
+//         requestAnimationFrame( animate );
+//         // measure time
+//         lastTimeMsec    = lastTimeMsec || nowMsec-1000/60
+//         var deltaMsec   = Math.min(200, nowMsec - lastTimeMsec)
+//         lastTimeMsec    = nowMsec
+//         // call each update function
+//         updateFcts.forEach(function(updateFn){
+//             updateFn(deltaMsec/1000, nowMsec/1000)
+//         })
+//     })
 
 //some helper functions here
 function fractionate(val, minVal, maxVal) {
