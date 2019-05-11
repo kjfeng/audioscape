@@ -1,5 +1,6 @@
 //initialise simplex noise instance
 var noise = new SimplexNoise();
+var updateFcts  = [];
 
 // the main visualiser function
 var vizInit = function (){
@@ -34,16 +35,34 @@ function play() {
     var bufferLength = analyser.frequencyBinCount;
     var dataArray = new Uint8Array(bufferLength);
 
-    //here comes the webgl
+    // //here comes the webgl
     var scene = new THREE.Scene();
     var group = new THREE.Group();
-    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0,0,100);
-    camera.lookAt(scene.position);
-    scene.add(camera);
 
-    var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    // var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // camera.position.set(0,0,100);
+    // camera.lookAt(scene.position);
+    // scene.add(camera);
+
+    // var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    // renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // added from city
+    renderer = new THREE.WebGLRenderer( { antialias: false, alpha: false } );
+    renderer.setClearColor( 0xd8e7ff );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+
+    camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 3000 );
+    camera.position.y = 80;
+
+    controls = new THREE.FirstPersonControls( camera );
+    controls.movementSpeed = 20;
+    controls.lookSpeed = 0.05;
+    controls.lookVertical = true;
+    updateFcts.push(function(delta, now){
+        controls.update( delta );       
+    })
 
     var planeGeometry = new THREE.PlaneGeometry(800, 800, 20, 20);
     var planeMaterial = new THREE.MeshLambertMaterial({
@@ -73,9 +92,9 @@ function play() {
         color: 0xff00ee,
         wireframe: true
     });
-    var cube = new THREE.Mesh(geometry, lambertMaterial);
-    cube.position.set(0, 0, 0);
-    group.add(cube);
+    // var cube = new THREE.Mesh(geometry, lambertMaterial);
+    // cube.position.set(0, 0, 0);
+    // group.add(cube);
     // don't know why 1 works, but seems to get shape back into original size
     var initialYTemp = 1;
 
@@ -106,6 +125,7 @@ function play() {
     var shadow = new THREE.Color( 0x303050 );
 
     for( var i = 0; i < 20000; i++ ){
+
         var buildingMesh= new THREE.Mesh( geometry );
         // put a random position
         buildingMesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
@@ -136,6 +156,7 @@ function play() {
             }
         }
         // merge it with cityGeometry - very important for performance
+        // THREE.GeometryUtils.merge( cityGeometry, buildingMesh );
         cityGeometry.mergeMesh(buildingMesh);
         buildings.push(buildingMesh);
         group.add(buildingMesh);
@@ -152,6 +173,18 @@ var material  = new THREE.MeshLambertMaterial({
   vertexColors    : THREE.VertexColors
 });
 var cityMesh = new THREE.Mesh(cityGeometry, material );
+
+var info = document.createElement( 'div' );
+info.style.position = 'absolute';
+info.style.left = '0';
+info.style.top = '15px';
+info.style.width = '100%';
+info.style.color = 'rgba(0,0,64,0.5)';
+info.style.textAlign = 'center';
+info.textContent = 'click and hold to move forward';
+document.body.appendChild( info );
+
+lastTime = performance.now();
 
 function generateTexture() {
   // build a small canvas 32x64 and paint it in white
@@ -251,6 +284,10 @@ function generateTexture() {
       // group.rotation.y += 0.005;
       renderer.render(scene, camera);
       requestAnimationFrame(render);
+
+      updateFcts.push(function(){
+        renderer.render( scene, camera );       
+    })
     }
 
     function onWindowResize() {
@@ -334,7 +371,34 @@ window.onload = vizInit();
 
 document.body.addEventListener('touchend', function(ev) { context.resume(); });
 
+function animate() {
+    requestAnimationFrame( animate );
 
+    var time = performance.now() / 1000;
+
+    controls.update( time - lastTime );
+    renderer.render( scene, camera );
+
+    lastTime = time;
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+//      loop runner                         //
+//////////////////////////////////////////////////////////////////////////////////
+var lastTimeMsec= null
+    requestAnimationFrame(function animate(nowMsec){
+        // keep looping
+        requestAnimationFrame( animate );
+        // measure time
+        lastTimeMsec    = lastTimeMsec || nowMsec-1000/60
+        var deltaMsec   = Math.min(200, nowMsec - lastTimeMsec)
+        lastTimeMsec    = nowMsec
+        // call each update function
+        updateFcts.forEach(function(updateFn){
+            updateFn(deltaMsec/1000, nowMsec/1000)
+        })
+    })
 
 //some helper functions here
 function fractionate(val, minVal, maxVal) {
