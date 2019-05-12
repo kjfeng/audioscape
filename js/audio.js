@@ -70,8 +70,25 @@ function play() {
     // build the base geometry for each building
 
 
-    var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
+    var box = new THREE.BoxGeometry( 1, 1, 1 );
+    box.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
+
+    // box.faces.splice( 3, 1 );
+    // box.faceVertexUvs[0].splice( 3, 1 );
+
+    // change UVs for the top face
+    // - it is the roof so it wont use the same texture as the side of the building
+    // - set the UVs to the single coordinate 0,0. so the roof will be the same color
+    //   as a floor row.
+
+    debugger;
+    box.faceVertexUvs[0][4][0].set( 0, 0 );
+    box.faceVertexUvs[0][4][1].set( 0, 0 );
+    box.faceVertexUvs[0][4][2].set( 0, 0 );
+    box.faceVertexUvs[0][5][0].set( 0, 0 );
+    box.faceVertexUvs[0][5][1].set( 0, 0 );
+    box.faceVertexUvs[0][5][2].set( 0, 0 );
+    // box.faceVertexUvs[0][2][3].set( 0, 0 );
 
 
     // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
@@ -99,8 +116,8 @@ function play() {
 
     // build the mesh
     var material = new THREE.MeshLambertMaterial({
-      map     : texture,
-      vertexColors    : THREE.VertexColors
+      map : texture,
+      vertexColors : THREE.VertexColors
     });
     // var cityMesh = new THREE.Mesh(cityGeometry, material);
     // group.add(cityMesh);
@@ -140,7 +157,7 @@ function play() {
     }
 
     for (var i = 0; i < 20000; i++ ){
-        var buildingMesh= new THREE.Mesh(geometry, material);
+        var buildingMesh= new THREE.Mesh(box, material);
         // put a random position
         buildingMesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
         buildingMesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
