@@ -33,7 +33,7 @@ let getBox = function() {
 }
 
 // vanilla city
-let generateVanillaCity = function(renderer, buildingsArray) {
+let generateVanillaCity = function(buildingsArray) {
 
   var cityGeometry= new THREE.Geometry();
 
@@ -76,7 +76,7 @@ let generateVanillaCity = function(renderer, buildingsArray) {
 }
 
 // block city
-let generateBlockCity = function(renderer, buildingsArray) {
+let generateBlockCity = function(buildingsArray) {
 
   var cityGeometry= new THREE.Geometry();
   // more texture stuff
