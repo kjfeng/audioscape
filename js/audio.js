@@ -73,23 +73,13 @@ function play() {
     var box = new THREE.BoxGeometry( 1, 1, 1 );
     box.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
 
-    // box.faces.splice( 3, 1 );
-    // box.faceVertexUvs[0].splice( 3, 1 );
-
-    // change UVs for the top face
-    // - it is the roof so it wont use the same texture as the side of the building
-    // - set the UVs to the single coordinate 0,0. so the roof will be the same color
-    //   as a floor row.
-
-    debugger;
+    // get rid of texture for the top of building
     box.faceVertexUvs[0][4][0].set( 0, 0 );
     box.faceVertexUvs[0][4][1].set( 0, 0 );
     box.faceVertexUvs[0][4][2].set( 0, 0 );
     box.faceVertexUvs[0][5][0].set( 0, 0 );
     box.faceVertexUvs[0][5][1].set( 0, 0 );
     box.faceVertexUvs[0][5][2].set( 0, 0 );
-    // box.faceVertexUvs[0][2][3].set( 0, 0 );
-
 
     // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
     // var lambertMaterial = new THREE.MeshLambertMaterial({
@@ -108,17 +98,7 @@ function play() {
     var light = new THREE.Color( 0xffffff );
     var shadow = new THREE.Color( 0x303050 );
 
-    // texture stuff
-    // generate the texture
-    var texture = new THREE.Texture( generateTexture() );
-    texture.anisotropy = renderer.getMaxAnisotropy();
-    texture.needsUpdate = true;
 
-    // build the mesh
-    var material = new THREE.MeshLambertMaterial({
-      map : texture,
-      vertexColors : THREE.VertexColors
-    });
     // var cityMesh = new THREE.Mesh(cityGeometry, material);
     // group.add(cityMesh);
 
@@ -126,10 +106,12 @@ function play() {
       // build a small canvas 32x64 and paint it in white
       var canvas  = document.createElement( 'canvas' );
       canvas.width = 32;
-      canvas.height    = 64;
+      canvas.height = 64;
       var context = canvas.getContext( '2d' );
-      // plain it in white
-      context.fillStyle    = '#ffffff';
+      // plain it in some shade of gray
+      let grayRand = Math.round(Math.random() * 255);
+      // let randomGray = rgb(redRand, blueRand, greenRand);
+      context.fillStyle = 'rgb('+ grayRand +', '+ grayRand +', '+ grayRand +')';
       context.fillRect( 0, 0, 32, 64 );
       // draw the window rows - with a small noise to simulate light variations in each room
       for (var y = 2; y < 64; y += 2 ) {
@@ -156,8 +138,21 @@ function play() {
       return canvas2;
     }
 
-    for (var i = 0; i < 20000; i++ ){
-        var buildingMesh= new THREE.Mesh(box, material);
+    // more texture stuff
+    // generate the texture
+    var texture = new THREE.Texture( generateTexture() );
+    texture.anisotropy = renderer.getMaxAnisotropy();
+    texture.needsUpdate = true;
+
+    // build the material
+    var material = new THREE.MeshLambertMaterial({
+      map : texture,
+      vertexColors : THREE.VertexColors
+    });
+
+    for (var i = 0; i < 10000; i++ ) {
+        // material.color.setRGB(Math.random(), Math.random(), Math.random());
+        var buildingMesh = new THREE.Mesh(box, material);
         // put a random position
         buildingMesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
         buildingMesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
@@ -169,39 +164,12 @@ function play() {
         buildingMesh.scale.y    = (Math.random() * Math.random() * Math.random() * buildingMesh.scale.x) * 8 + 8;
         buildingMesh.scale.z    = buildingMesh.scale.x;
 
-        // establish the base color for the buildingMesh
-        var value   = 1 - Math.random() * Math.random();
-        var baseColor   = new THREE.Color().setRGB( value + Math.random() * 0.1, value, value + Math.random() * 0.1 );
 
-        // set topColor/bottom vertexColors as adjustement of baseColor
-        var topColor    = baseColor.clone().multiply( light );
-        var bottomColor = baseColor.clone().multiply( shadow );
-        // set .vertexColors for each face
-        var geometry    = buildingMesh.geometry;
-        for ( var j = 0, jl = geometry.faces.length; j < jl; j ++ ) {
-            if ( j === 2 ) {
-                // set face.vertexColors on root face
-                geometry.faces[ j ].vertexColors = [ baseColor, baseColor, baseColor, baseColor ];
-            } else {
-                // set face.vertexColors on sides faces
-                geometry.faces[ j ].vertexColors = [ topColor, bottomColor, bottomColor, topColor ];
-            }
-        }
         // merge it with cityGeometry - very important for performance
         cityGeometry.mergeMesh(buildingMesh);
         buildings.push(buildingMesh);
         group.add(buildingMesh);
     }
-
-    // var icosahedronGeometry = new THREE.IcosahedronGeometry(10, 4);
-    // var lambertMaterial = new THREE.MeshLambertMaterial({
-    //     color: 0xff00ee,
-    //     wireframe: true
-    // });
-
-    // var ball = new THREE.Mesh(icosahedronGeometry, lambertMaterial);
-    // ball.position.set(0, 0, 0);
-    // group.add(ball);
 
     var ambientLight = new THREE.AmbientLight(0xaaaaaa);
     scene.add(ambientLight);
