@@ -144,14 +144,18 @@ function play() {
     texture.anisotropy = renderer.getMaxAnisotropy();
     texture.needsUpdate = true;
 
-    // build the material
-    var material = new THREE.MeshLambertMaterial({
-      map : texture,
-      vertexColors : THREE.VertexColors
-    });
+
 
     for (var i = 0; i < 10000; i++ ) {
         // material.color.setRGB(Math.random(), Math.random(), Math.random());
+        // build the material
+        var material = new THREE.MeshLambertMaterial({
+          map : texture,
+          vertexColors : THREE.VertexColors
+        });
+        let randomGray = Math.random() + 0.3;
+        if (randomGray > 1) randomGray = 1;
+        material.color.setRGB(randomGray, randomGray, randomGray);
         var buildingMesh = new THREE.Mesh(box, material);
         // put a random position
         buildingMesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
