@@ -40,11 +40,6 @@ function play() {
     var scene = new THREE.Scene();
     var group = new THREE.Group();
 
-<<<<<<< HEAD
-    var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    // floor creation
-=======
     // var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     // camera.position.set(0,0,100);
     // camera.lookAt(scene.position);
@@ -62,7 +57,6 @@ function play() {
     camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 3000 );
     camera.position.y = 80;
 
->>>>>>> 51b825a00a334bd515a032b5bb131f02e725bf56
     var planeGeometry = new THREE.PlaneGeometry(800, 800, 20, 20);
     var planeMaterial = new THREE.MeshLambertMaterial({
         color: 0x6904ce,
@@ -73,19 +67,11 @@ function play() {
     // some fog
     scene.fog	= new THREE.FogExp2( 0xd0e0f0, 0.0020 );
 
-<<<<<<< HEAD
-    // floor
-    var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.rotation.x = -0.5 * Math.PI;
-    plane.position.set(0, 0, 0);
-    group.add(plane);
-=======
 
     // var plane = new THREE.Mesh(planeGeometry, planeMaterial);
     // plane.rotation.x = -0.5 * Math.PI;
     // plane.position.set(0, 30, 0);
     // group.add(plane);
->>>>>>> 51b825a00a334bd515a032b5bb131f02e725bf56
 
     // var plane2 = new THREE.Mesh(planeGeometry, planeMaterial);
     // plane2.rotation.x = -0.5 * Math.PI;
@@ -94,30 +80,8 @@ function play() {
 
     // DALE ADDED THIS
     // build the base geometry for each building
-
-
-    var box = new THREE.BoxGeometry( 1, 1, 1 );
-    box.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
-
-    // get rid of texture for the top of building
-    box.faceVertexUvs[0][4][0].set( 0, 0 );
-    box.faceVertexUvs[0][4][1].set( 0, 0 );
-    box.faceVertexUvs[0][4][2].set( 0, 0 );
-    box.faceVertexUvs[0][5][0].set( 0, 0 );
-    box.faceVertexUvs[0][5][1].set( 0, 0 );
-    box.faceVertexUvs[0][5][2].set( 0, 0 );
-
+    var geometry = new THREE.BoxGeometry( 1, 1, 1 );
     // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-<<<<<<< HEAD
-    // var lambertMaterial = new THREE.MeshLambertMaterial({
-    //     color: 0xff00ee,
-    //     wireframe: true
-    // });
-    // var cube = new THREE.Mesh(geometry, lambertMaterial);
-    // cube.position.set(0, 0, 0);
-    // group.add(cube);
-
-=======
     var lambertMaterial = new THREE.MeshLambertMaterial({
         color: 0xff00ee,
         wireframe: true
@@ -146,7 +110,6 @@ function play() {
     // geometry.faceVertexUvs[0][2][1].set( 0, 0 );
     // geometry.faceVertexUvs[0][2][2].set( 0, 0 );
     // geometry.faceVertexUvs[0][2][3].set( 0, 0 );
->>>>>>> 51b825a00a334bd515a032b5bb131f02e725bf56
 
     var cityGeometry= new THREE.Geometry();
     var buildings = [];
@@ -155,63 +118,6 @@ function play() {
     var light = new THREE.Color( 0xffffff );
     var shadow = new THREE.Color( 0x303050 );
 
-<<<<<<< HEAD
-
-    // var cityMesh = new THREE.Mesh(cityGeometry, material);
-    // group.add(cityMesh);
-
-    function generateTexture() {
-      // build a small canvas 32x64 and paint it in white
-      var canvas  = document.createElement( 'canvas' );
-      canvas.width = 32;
-      canvas.height = 64;
-      var context = canvas.getContext( '2d' );
-      // plain it in some shade of gray
-      let grayRand = Math.round(Math.random() * 255);
-      // let randomGray = rgb(redRand, blueRand, greenRand);
-      context.fillStyle = 'rgb('+ grayRand +', '+ grayRand +', '+ grayRand +')';
-      context.fillRect( 0, 0, 32, 64 );
-      // draw the window rows - with a small noise to simulate light variations in each room
-      for (var y = 2; y < 64; y += 2 ) {
-          for (var x = 0; x < 32; x += 2 ) {
-              var value   = Math.floor( Math.random() * 64 );
-              context.fillStyle = 'rgb(' + [value, value, value].join( ',' )  + ')';
-              context.fillRect( x, y, 2, 1 );
-          }
-      }
-
-      // build a bigger canvas and copy the small one in it
-      // This is a trick to upscale the texture without filtering
-      var canvas2 = document.createElement( 'canvas' );
-      canvas2.width    = 512;
-      canvas2.height   = 1024;
-      var context = canvas2.getContext( '2d' );
-      // disable smoothing
-      context.imageSmoothingEnabled        = false;
-      context.webkitImageSmoothingEnabled  = false;
-      context.mozImageSmoothingEnabled = false;
-      // then draw the image
-      context.drawImage( canvas, 0, 0, canvas2.width, canvas2.height );
-      // return the just built canvas2
-      return canvas2;
-    }
-
-    // more texture stuff
-    // generate the texture
-    var texture = new THREE.Texture( generateTexture() );
-    texture.anisotropy = renderer.getMaxAnisotropy();
-    texture.needsUpdate = true;
-
-    // build the material
-    var material = new THREE.MeshLambertMaterial({
-      map : texture,
-      vertexColors : THREE.VertexColors
-    });
-
-    for (var i = 0; i < 10000; i++ ) {
-        // material.color.setRGB(Math.random(), Math.random(), Math.random());
-        var buildingMesh = new THREE.Mesh(box, material);
-=======
     // light = new THREE.DirectionalLight( 0xffffff, 0.8 );
 
     // var parameters = {
@@ -249,7 +155,6 @@ function play() {
     for( var i = 0; i < 20000; i++ ){
 
         var buildingMesh= new THREE.Mesh( geometry );
->>>>>>> 51b825a00a334bd515a032b5bb131f02e725bf56
         // put a random position
         buildingMesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
         buildingMesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
@@ -261,7 +166,23 @@ function play() {
         buildingMesh.scale.y    = (Math.random() * Math.random() * Math.random() * buildingMesh.scale.x) * 8 + 8;
         buildingMesh.scale.z    = buildingMesh.scale.x;
 
-
+        // establish the base color for the buildingMesh
+        var value   = 1 - Math.random() * Math.random();
+        var baseColor   = new THREE.Color().setRGB( value + Math.random() * 0.1, value, value + Math.random() * 0.1 );
+        // set topColor/bottom vertexColors as adjustement of baseColor
+        var topColor    = baseColor.clone().multiply( light );
+        var bottomColor = baseColor.clone().multiply( shadow );
+        // set .vertexColors for each face
+        var geometry    = buildingMesh.geometry;
+        for ( var j = 0, jl = geometry.faces.length; j < jl; j ++ ) {
+            if ( j === 2 ) {
+                // set face.vertexColors on root face
+                geometry.faces[ j ].vertexColors = [ baseColor, baseColor, baseColor, baseColor ];
+            } else {
+                // set face.vertexColors on sides faces
+                geometry.faces[ j ].vertexColors = [ topColor, bottomColor, bottomColor, topColor ];
+            }
+        }
         // merge it with cityGeometry - very important for performance
         // THREE.GeometryUtils.merge( cityGeometry, buildingMesh );
         cityGeometry.mergeMesh(buildingMesh);
@@ -269,8 +190,6 @@ function play() {
         group.add(buildingMesh);
     }
 
-<<<<<<< HEAD
-=======
     // generate the texture
 var texture       = new THREE.Texture( generateTexture() );
 texture.anisotropy = renderer.getMaxAnisotropy();
@@ -340,7 +259,6 @@ function generateTexture() {
     // ball.position.set(0, 0, 0);
     // group.add(ball);
 
->>>>>>> 51b825a00a334bd515a032b5bb131f02e725bf56
     var ambientLight = new THREE.AmbientLight(0xaaaaaa);
     scene.add(ambientLight);
 
@@ -392,7 +310,7 @@ function generateTexture() {
       // makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
 
       // ONE CUBE
-      // varyBuildingHeight(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4), 1);
+      // varyBuildingHeight(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4), initialYTemp);
 
       // CITY
       for (var i = 0; i < buildings.length; i ++ ) {
