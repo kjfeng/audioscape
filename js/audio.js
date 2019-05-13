@@ -175,10 +175,12 @@ function play() {
     //     group.add(buildingMesh);
     // }
     let buildings = [];
-    let newBuildingsArr = generateVanillaCity(renderer, buildings);
+    let newBuildingsArr = generateBlockCity(renderer, buildings);
     for (let i = 0; i < newBuildingsArr.length; i++) {
       group.add(newBuildingsArr[i]);
     }
+    let cityGround = generateSquareGround();
+    group.add(cityGround);
 
     var ambientLight = new THREE.AmbientLight(0xaaaaaa);
     scene.add(ambientLight);

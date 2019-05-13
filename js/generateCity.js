@@ -1,11 +1,11 @@
 // generates the city scene
 
 // all the constants
-var nBlockX	= 10
-var nBlockZ	= 10
+var nBlockX	= 15
+var nBlockZ	= 15
 var blockSizeX	= 50
 var blockSizeZ	= 50
-var blockDensity= 20
+var blockDensity= 10
 var roadW	= 8
 var roadD	= 8
 var buildingMaxW= 15
@@ -34,16 +34,6 @@ let getBox = function() {
 
 // vanilla city
 let generateVanillaCity = function(renderer, buildingsArray) {
-  // var box = new THREE.BoxGeometry( 1, 1, 1 );
-  // box.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
-  //
-  // // get rid of texture for the top of building
-  // box.faceVertexUvs[0][4][0].set( 0, 0 );
-  // box.faceVertexUvs[0][4][1].set( 0, 0 );
-  // box.faceVertexUvs[0][4][2].set( 0, 0 );
-  // box.faceVertexUvs[0][5][0].set( 0, 0 );
-  // box.faceVertexUvs[0][5][1].set( 0, 0 );
-  // box.faceVertexUvs[0][5][2].set( 0, 0 );
 
   var cityGeometry= new THREE.Geometry();
 
@@ -86,20 +76,9 @@ let generateVanillaCity = function(renderer, buildingsArray) {
 }
 
 // block city
-let generateCity = function(renderer, buildingsArray) {
-  var box = new THREE.BoxGeometry( 1, 1, 1 );
-  box.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
-
-  // get rid of texture for the top of building
-  box.faceVertexUvs[0][4][0].set( 0, 0 );
-  box.faceVertexUvs[0][4][1].set( 0, 0 );
-  box.faceVertexUvs[0][4][2].set( 0, 0 );
-  box.faceVertexUvs[0][5][0].set( 0, 0 );
-  box.faceVertexUvs[0][5][1].set( 0, 0 );
-  box.faceVertexUvs[0][5][2].set( 0, 0 );
+let generateBlockCity = function(renderer, buildingsArray) {
 
   var cityGeometry= new THREE.Geometry();
-
   // more texture stuff
   // generate the texture
   var texture = new THREE.Texture( generateTexture() );
@@ -107,38 +86,43 @@ let generateCity = function(renderer, buildingsArray) {
   texture.needsUpdate = true;
 
   // make 10 000 buildings
-  for (var i = 0; i < 10000; i++ ) {
-      // material.color.setRGB(Math.random(), Math.random(), Math.random());
-      // build the material
-      var material = new THREE.MeshLambertMaterial({
-        map : texture,
-        vertexColors : THREE.VertexColors
-      });
-      let randomGray = Math.random() + 0.5;
-      if (randomGray > 1) randomGray = 1;
-      material.color.setRGB(randomGray, randomGray, randomGray);
-      var buildingMesh = new THREE.Mesh(box, material);
-      // put a random position
-      buildingMesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
-      buildingMesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
-      // put a random rotation
-      buildingMesh.rotation.y = Math.random()*Math.PI*2;
-      // put a random scale
-      // MODIFY THIS FOR BUILDING SIZE?
-      buildingMesh.scale.x    = Math.random() * Math.random() * Math.random() * Math.random() * 50 + 10;
-      buildingMesh.scale.y    = (Math.random() * Math.random() * Math.random() * buildingMesh.scale.x) * 8 + 8;
-      buildingMesh.scale.z    = buildingMesh.scale.x;
+  for( var blockZ = 0; blockZ < nBlockZ; blockZ++) {
+    for( var blockX = 0; blockX < nBlockX; blockX++) {
+      for( var i = 0; i < blockDensity; i++) {
+        // build the material
+        var material = new THREE.MeshLambertMaterial({
+          map : texture,
+          vertexColors : THREE.VertexColors
+        });
+        let randomGray = Math.random() + 0.5;
+        if (randomGray > 1) randomGray = 1;
+        material.color.setRGB(randomGray, randomGray, randomGray);
+        var buildingMesh = new THREE.Mesh(box, material);
+        // put a random position
+        // set position
+        buildingMesh.position.x	= (Math.random()-0.5)*(blockSizeX-buildingMaxW-roadW-sidewalkW)
+        buildingMesh.position.z	= (Math.random()-0.5)*(blockSizeZ-buildingMaxD-roadD-sidewalkD)
 
-      // merge it with cityGeometry - very important for performance
-      cityGeometry.mergeMesh(buildingMesh);
-      buildingsArray.push(buildingMesh);
-      // group.add(buildingMesh);
+        // add position for the blocks
+        buildingMesh.position.x	+= (blockX+0.5-nBlockX/2)*blockSizeX
+        buildingMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
+
+        // put a random scale
+        buildingMesh.scale.x	= Math.min(Math.random() * 5 + 10, buildingMaxW);
+        buildingMesh.scale.y	= (Math.random() * Math.random() * buildingMesh.scale.x) * 5 + 5;
+        buildingMesh.scale.z	= Math.min(buildingMesh.scale.x, buildingMaxD)
+
+        // merge it with cityGeometry - very important for performance
+        cityGeometry.mergeMesh(buildingMesh);
+        buildingsArray.push(buildingMesh);
+      }
+    }
   }
   // let cityMesh = new THREE.Mesh(cityGeometry);
   return buildingsArray;
 }
 
-let createSquareGround	= function(){
+let generateSquareGround	= function() {
   var geometry	= new THREE.PlaneGeometry( 1, 1, 1 );
   var material	= new THREE.MeshLambertMaterial({
     color	: 0x222222
@@ -148,7 +132,7 @@ let createSquareGround	= function(){
   ground.scale.x	= (nBlockZ)*blockSizeZ
   ground.scale.y	= (nBlockX)*blockSizeX
 
-  return ground
+  return ground;
 }
 
 var lampGeometry= new THREE.CubeGeometry( 0.1, 3, 0.1)
