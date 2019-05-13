@@ -1,6 +1,6 @@
 //initialise simplex noise instance
 var noise = new SimplexNoise();
-
+lastTime = performance.now();
 // the main visualiser function
 var vizInit = function (){
 
@@ -85,8 +85,12 @@ function play() {
     spotLight.castShadow = true;
     scene.add(spotLight);
 
-    var orbitControls = new THREE.OrbitControls(camera);
-    orbitControls.autoRotate = true;
+    // var orbitControls = new THREE.OrbitControls(camera);
+    // orbitControls.autoRotate = true;
+    controls = new THREE.FirstPersonControls( camera );
+    controls.movementSpeed = 20;
+    controls.lookSpeed = 0.05;
+    controls.lookVertical = true;
 
     scene.add(group);
 
@@ -128,6 +132,7 @@ function play() {
       // group.rotation.y += 0.005;
       renderer.render(scene, camera);
       requestAnimationFrame(render);
+      requestAnimationFrame(animate );
     }
 
     function onWindowResize() {
@@ -211,6 +216,16 @@ window.onload = vizInit();
 
 document.body.addEventListener('touchend', function(ev) { context.resume(); });
 
+function animate() {
+    // requestAnimationFrame( animate );
+
+    var time = performance.now() / 1000;
+
+    controls.update( time - lastTime );
+    // renderer.render( scene, camera );
+
+    lastTime = time;
+  }
 
 
 //some helper functions here
