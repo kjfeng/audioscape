@@ -175,7 +175,7 @@ function play() {
     //     group.add(buildingMesh);
     // }
     let buildings = [];
-    let newBuildingsArr = generateCity(renderer, buildings);
+    let newBuildingsArr = generateVanillaCity(renderer, buildings);
     for (let i = 0; i < newBuildingsArr.length; i++) {
       group.add(newBuildingsArr[i]);
     }
