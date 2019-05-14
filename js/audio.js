@@ -91,12 +91,13 @@ function play() {
     spotLight.castShadow = true;
     scene.add(spotLight);
 
-    // var orbitControls = new THREE.OrbitControls(camera);
-    // orbitControls.autoRotate = true;
-    controls = new THREE.FirstPersonControls( camera );
-    controls.movementSpeed = 20;
-    controls.lookSpeed = 0.05;
-    controls.lookVertical = true;
+    var orbitControls = new THREE.OrbitControls(camera);
+    orbitControls.autoRotate = true;
+
+    // controls = new THREE.FirstPersonControls( camera );
+    // controls.movementSpeed = 20;
+    // controls.lookSpeed = 0.05;
+    // controls.lookVertical = true;
 
     scene.add(group);
 
