@@ -72,8 +72,14 @@ function play() {
     for (let i = 0; i < newBuildingsArr.length; i++) {
       group.add(newBuildingsArr[i]);
     }
+
     let cityGround = generateSquareGround();
     group.add(cityGround);
+
+    var lampheads = [];
+    let lampsMesh = generateLamps(lampheads);
+    group.add(lampsMesh);
+
 
     var ambientLight = new THREE.AmbientLight(0xaaaaaa);
     scene.add(ambientLight);
@@ -120,9 +126,13 @@ function play() {
       // varyBuildingHeight(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4), 1);
 
       // CITY
-      for (var i = 0; i < newBuildingsArr.length; i ++ ) {
+      for (let i = 0; i < newBuildingsArr.length; i ++ ) {
         varyBuildingHeight(newBuildingsArr[i], modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4), 1);
-    }
+      }
+      // for (let i = 0; i < lampheads.length; i++) {
+      //   varyLampColour(lampheads[i], modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
+      // }
+
 
       // CONTROLS AUTO ROTATION
       // group.rotation.y += 0.005;
@@ -188,6 +198,14 @@ function play() {
         mesh.geometry.normalsNeedUpdate = true;
         mesh.geometry.computeVertexNormals();
         mesh.geometry.computeFaceNormals();
+    }
+
+    function varyLampColor(lamphead, bassFr, treFr) {
+
+      for (let i = 0; i < lamphead.geometry.faces.length; i++ ) {
+        lamphead.geometry.faces[i].color.set('blue' );
+      }
+
     }
 
     function makeRoughGround(mesh, distortionFr) {

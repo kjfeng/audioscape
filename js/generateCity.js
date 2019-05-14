@@ -135,10 +135,11 @@ let generateSquareGround	= function() {
   return ground;
 }
 
-var lampGeometry= new THREE.CubeGeometry( 0.1, 3, 0.1)
-var lampMesh	= new THREE.Mesh(lampGeometry)
+// var lampGeometry= new THREE.CubeGeometry( 0.1, 3, 0.1 );
+// var lampMesh	= new THREE.Mesh(lampGeometry );
 
-this.createSquareLamps	= function(){
+
+let generateLamps	= function(lampheads) {
   var object3d	= new THREE.Object3D()
 
   var lampGeometry= new THREE.CubeGeometry(1,1,1)
@@ -151,7 +152,7 @@ this.createSquareLamps	= function(){
     for( var blockX = 0; blockX < nBlockX; blockX++){
       // lampMesh.position.x	= 0
       // lampMesh.position.z	= 0
-      function addLamp(position){
+      function addLamp(position) {
         //////////////////////////////////////////////////////////////////////////////////
         //		head light						//
         //////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +170,8 @@ this.createSquareLamps	= function(){
         lampMesh.position.x	+= (blockX+0.5-nBlockX/2)*blockSizeX
         lampMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
         // merge it with cityGeometry - very important for performance
-        lampsGeometry.mergeMesh( lampMesh )
+        lampsGeometry.mergeMesh( lampMesh );
+        lampheads.push( lampMesh );
 
         //////////////////////////////////////////////////////////////////////////////////
         //		pole								//
@@ -207,6 +209,11 @@ this.createSquareLamps	= function(){
         lampMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
         // merge it with cityGeometry - very important for performance
         lampsGeometry.mergeMesh( lampMesh );
+        // // put singe lamp mesh in array
+        // let singleLampMesh = new THREE.Mesh(lampsGeometry);
+        // let lamp3d = new THREE.Object3D();
+        // lamp3d.add(singleLampMesh)
+        // lampsArray.push(lamp3d);
       }
       // south
       var position	= new THREE.Vector3()
@@ -243,7 +250,7 @@ this.createSquareLamps	= function(){
   var lampsMesh	= new THREE.Mesh(lampsGeometry, material );
   object3d.add(lampsMesh)
 
-  return object3d
+  return object3d;
 }
 
 this.createSquareSideWalks	= function(){
