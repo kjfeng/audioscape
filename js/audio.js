@@ -44,22 +44,22 @@ function play() {
 
     var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    // floor creation
-    var planeGeometry = new THREE.PlaneGeometry(800, 800, 20, 20);
-    var planeMaterial = new THREE.MeshLambertMaterial({
-        color: 0x6904ce,
-        side: THREE.DoubleSide,
-        wireframe: true
-    });
+    // // floor creation
+    // var planeGeometry = new THREE.PlaneGeometry(800, 800, 20, 20);
+    // var planeMaterial = new THREE.MeshLambertMaterial({
+    //     color: 0x6904ce,
+    //     side: THREE.DoubleSide,
+    //     wireframe: true
+    // });
 
     // some fog
     scene.fog	= new THREE.FogExp2( 0xd0e0f0, 0.0020 );
 
-    // floor
-    var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.rotation.x = -0.5 * Math.PI;
-    plane.position.set(0, 0, 0);
-    group.add(plane);
+    // // floor
+    // var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    // plane.rotation.x = -0.5 * Math.PI;
+    // plane.position.set(0, 0, 0);
+    // group.add(plane);
 
     // var plane2 = new THREE.Mesh(planeGeometry, planeMaterial);
     // plane2.rotation.x = -0.5 * Math.PI;
@@ -67,18 +67,30 @@ function play() {
     // group.add(plane2);
 
     // GENERATE THE GOODS
+
+    var sidewalksEmpty = [];
+    let sidewalks = generateSidewalks(sidewalksEmpty);
+    for (let i = 0; i < sidewalks.length; i++) {
+      scene.add(sidewalks[i]);
+    }
+
     let buildings = [];
     let newBuildingsArr = generateBlockCity(buildings);
     for (let i = 0; i < newBuildingsArr.length; i++) {
-      group.add(newBuildingsArr[i]);
+      scene.add(newBuildingsArr[i]);
     }
 
     let cityGround = generateSquareGround();
-    group.add(cityGround);
+    scene.add(cityGround);
 
     var lampheads = [];
     let lampsMesh = generateLamps(lampheads);
-    group.add(lampsMesh);
+
+    scene.add(lampsMesh);
+
+    // var lampheads = [];
+    // let lampHeadMeshes = generateLampLights(lampheads);
+    // scene.add(lampHeadMeshes);
 
 
     var ambientLight = new THREE.AmbientLight(0xaaaaaa);
@@ -86,7 +98,7 @@ function play() {
 
     var spotLight = new THREE.SpotLight(0xffffff);
     spotLight.intensity = 0.9;
-    spotLight.position.set(-10, 40, 20);
+    spotLight.position.set(-10, 100, 20);
     // spotLight.lookAt(cube); // ball
     spotLight.castShadow = true;
     scene.add(spotLight);
@@ -99,7 +111,7 @@ function play() {
     // controls.lookSpeed = 0.05;
     // controls.lookVertical = true;
 
-    scene.add(group);
+    // scene.add(group);
 
     document.getElementById('out').appendChild(renderer.domElement);
 
@@ -109,6 +121,7 @@ function play() {
 
     function render() {
       analyser.getByteFrequencyData(dataArray);
+
 
       var lowerHalfArray = dataArray.slice(0, (dataArray.length/2) - 1);
       var upperHalfArray = dataArray.slice((dataArray.length/2) - 1, dataArray.length - 1);
@@ -124,16 +137,25 @@ function play() {
       var upperMaxFr = upperMax / upperHalfArray.length;
       var upperAvgFr = upperAvg / upperHalfArray.length;
 
+      var bassFr = modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8);
+      var treFr = modulate(upperAvgFr, 0, 1, 0, 4);
+
       // makeRoughGround(plane, modulate(upperAvgFr, 0, 1, 0.5, 4));
       // makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
 
-      // ONE CUBE
-      // varyBuildingHeight(cube, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4), 1);
+
+      for (let i = 0; i < sidewalks.length; i++ ) {
+        varySidewalkSize(sidewalks[i], bassFr, treFr, 1);
+      }
 
       // CITY
-      for (let i = 0; i < newBuildingsArr.length; i ++ ) {
-        varyBuildingHeight(newBuildingsArr[i], modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4), 1);
+      for (let i = 0; i < newBuildingsArr.length; i++ ) {
+        varyBuildingHeight(newBuildingsArr[i], bassFr, treFr, 1);
       }
+
+      document.body.style.background = 'linear-gradient(150deg, #e2f1ff, #000000)';
+
+
       // for (let i = 0; i < lampheads.length; i++) {
       //   varyLampColour(lampheads[i], modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
       // }
@@ -143,7 +165,7 @@ function play() {
       // group.rotation.y += 0.005;
       renderer.render(scene, camera);
       requestAnimationFrame(render);
-      requestAnimationFrame(animate );
+      requestAnimationFrame(animate);
     }
 
     function onWindowResize() {
@@ -151,23 +173,6 @@ function play() {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
-    // // trying to change so that only updates height
-    // function makeRoughBall(mesh, bassFr, treFr) {
-    //     // mesh.geometry.vertices.forEach(function (vertex, i) {
-    //         vertex = mesh.geometry.vertices[1];
-    //         var offset = mesh.geometry.parameters.width;
-    //         var amp = 7;
-    //         var time = window.performance.now();
-    //         vertex.normalize();
-    //         var rf = 0.00001;
-    //         var distance = (offset + bassFr ) + noise.noise3D(vertex.x + time *rf*7, vertex.y +  time*rf*8, vertex.z + time*rf*9) * amp * treFr;
-    //         mesh.geometry.parameters.height.multiplyScalar(distance);
-    //     // });
-    //     mesh.geometry.verticesNeedUpdate = true;
-    //     mesh.geometry.normalsNeedUpdate = true;
-    //     mesh.geometry.computeVertexNormals();
-    //     mesh.geometry.computeFaceNormals();
-    // }
 
     function varyBuildingHeight(mesh, bassFr, treFr, initialY) {
         // mesh.geometry.vertices.forEach(function (vertex, i) {
@@ -184,7 +189,7 @@ function play() {
             for (let i = 0; i < 4; i++) {
               topVertices[i].y = initialY;
             }
-            height = mesh.geometry.parameters.height;
+            // height = mesh.geometry.parameters.height;
             var rf = 0.00001;
             // var distance = (offset + bassFr ) + noise.noise3D(topVertices[0].x + time *rf*7, topVertices[0].y +  time*rf*8, topVertices[0].z + time*rf*9) * amp * treFr;
 
@@ -206,12 +211,71 @@ function play() {
         mesh.geometry.computeFaceNormals();
     }
 
-    function varyLampColor(lamphead, bassFr, treFr) {
+    function varyLampColour(lamphead, bassFr, treFr) {
 
-      for (let i = 0; i < lamphead.geometry.faces.length; i++ ) {
-        lamphead.geometry.faces[i].color.set('blue' );
+      // for (let i = 0; i < lamphead.geometry.faces.length; i++ ) {
+      //   lamphead.material.color.setRGB(0, 0, 1);
+      // }
+      lamphead.material.color.setRGB(1, 1, 1);
+
+      lamphead.geometry.coloursNeedUpdate = true;
+      lamphead.material.needsUpdate = true;
+
+    }
+
+    function varySidewalkSize(mesh, bassFr, treFr, initialSize) {
+
+      var offset = mesh.geometry.parameters.width;
+      var amp = 7;
+      var time = window.performance.now();
+      // vertex = mesh.geometry.vertices[1];
+      var topVertices = [
+        mesh.geometry.vertices[0],
+        mesh.geometry.vertices[1],
+        mesh.geometry.vertices[4],
+        mesh.geometry.vertices[5]
+      ];
+      for (let i = 0; i < 4; i++) {
+        topVertices[i].y = initialSize;
+      }
+      // height = mesh.geometry.parameters.height;
+      var rf = 0.00001;
+      // var distance = (offset + bassFr ) + noise.noise3D(topVertices[0].x + time *rf*7, topVertices[0].y +  time*rf*8, topVertices[0].z + time*rf*9) * amp * treFr;
+
+      var distance = bassFr + treFr;
+
+      for (let i = 0; i < 4; i++) {
+        topVertices[i].y += (distance * 0.01);
+        if (topVertices[i].y < initialSize) {
+          topVertices[i].y = initialSize;
+        }
       }
 
+      // mesh.geometry.parameters.height = height * 0;
+      // mesh.geometry.parameters.height.multiplyScalar(distance);
+  // });
+  mesh.geometry.verticesNeedUpdate = true;
+  mesh.geometry.normalsNeedUpdate = true;
+  mesh.geometry.computeVertexNormals();
+  mesh.geometry.computeFaceNormals();
+
+      // var rf = 0.00001;
+      //
+      // var distance = bassFr + treFr;
+      //
+      // for (let i = 0; i < mesh.geometry.vertices.length; i++) {
+      //   mesh.geometry.vertices[i].x *= (distance * 0.01);
+      //   mesh.geometry.vertices[i].y *= (distance * 0.01);
+      //   mesh.geometry.vertices[i].z *= (distance * 0.01);
+      //   if (mesh.geometry.vertices[i].x < initialSize) mesh.geometry.vertices[i].x = initialSize;
+      //   if (mesh.geometry.vertices[i].y < initialSize) mesh.geometry.vertices[i].y = initialSize;
+      //   if (mesh.geometry.vertices[i].z < initialSize) mesh.geometry.vertices[i].z = initialSize;
+      // }
+      // // updates
+      // mesh.geometry.verticesNeedUpdate = true;
+      // mesh.geometry.normalsNeedUpdate = true;
+      // mesh.geometry.computeVertexNormals();
+      // mesh.geometry.computeFaceNormals();
     }
 
     function makeRoughGround(mesh, distortionFr) {
@@ -240,7 +304,7 @@ function animate() {
 
     var time = performance.now() / 1000;
 
-    controls.update( time - lastTime );
+    // controls.update( time - lastTime );
     // renderer.render( scene, camera );
 
     lastTime = time;
