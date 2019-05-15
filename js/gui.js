@@ -1,10 +1,12 @@
 var guiEnabled = true;
+var initScene = "city - day";
 
 if (guiEnabled) {
   // GUI properties
   guiControls = new (function() {
     // this.fabricLength = fabricLength;
     this.wireframe = true;
+    this.scene = initScene;
 
     // this.rotate = rotate;
     // this.wind = wind;
@@ -29,7 +31,7 @@ if (guiEnabled) {
     // this.groundColor = 0x404761;
     // this.groundSpecular = 0x404761;
 
-    // this.fogColor = 0xcce0ff;
+    this.fogColor = 0xd0e0f0;
   })();
 
   // GUI elements
@@ -46,14 +48,14 @@ if (guiEnabled) {
   //     restartCloth();
   //   });
 
-  let wireframeControl = gui
-    .add(guiControls, "wireframe")
-    .name("Wireframe")
-    .onChange(function(value) {
-      showWireframe(value);
-    });
+  // let wireframeControl = gui
+  //   .add(guiControls, "wireframe")
+  //   .name("Wireframe")
+  //   .onChange(function(value) {
+  //     showWireframe(value);
+  //   });
 
-  // let interactionControls = gui.addFolder("Interaction");
+  let interactionControls = gui.addFolder("Appearance");
 
   // interactionControls
   //   .add(guiControls, "rotate")
@@ -79,12 +81,12 @@ if (guiEnabled) {
   //   .onChange(function(value) {
   //     movingSphere = value;
   //   });
-  // interactionControls
-  //   .add(guiControls, "pinned", ["None", "Corners", "OneEdge", "TwoEdges", "FourEdges", "Random"])
-  //   .name("pinned")
-  //   .onChange(function(value) {
-  //     pinCloth(value);
-  //   });
+  interactionControls
+    .add(guiControls, "scene", ["city - day", "city - evening", "city - night", "nature", "???", "!!!"])
+    .name("scene")
+    .onChange(function(value) {
+      // pinCloth(value);
+    });
 
   // let behaviorControls = gui.addFolder("Behavior");
 

@@ -1,5 +1,11 @@
 //initialise simplex noise instance
 var noise = new SimplexNoise();
+// random hsl for later
+var randomH1 = Math.random() * 100;
+var randomH1 = Math.random() * 100;
+var randomS1 = Math.random() * 100;
+var randomS2 = Math.random() * 100;
+
 lastTime = performance.now();
 // the main visualiser function
 var vizInit = function (){
@@ -53,7 +59,9 @@ function play() {
     // });
 
     // some fog
-    scene.fog	= new THREE.FogExp2( 0xd0e0f0, 0.0020 );
+    // scene.fog	= new THREE.FogExp2( 0xd0e0f0, 0.0020 );
+
+    scene.fog	= new THREE.FogExp2( 0x000000, 0.0020 );
 
     // // floor
     // var plane = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -96,12 +104,19 @@ function play() {
     var ambientLight = new THREE.AmbientLight(0xaaaaaa);
     scene.add(ambientLight);
 
-    var spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.intensity = 0.9;
-    spotLight.position.set(-10, 100, 20);
+    // var spotLight = new THREE.SpotLight(0xffffff);
+    // spotLight.intensity = 0.9;
+    // spotLight.position.set(-10, 1000, 20);
+    // // spotLight.lookAt(cube); // ball
+    // spotLight.castShadow = true;
+    // scene.add(spotLight);
+
+    var sun = new THREE.SpotLight(0xe8dc00);
+    sun.intensity = 0.5;
+    sun.position.set(-100, 0, 20);
     // spotLight.lookAt(cube); // ball
-    spotLight.castShadow = true;
-    scene.add(spotLight);
+    sun.castShadow = true;
+    scene.add(sun);
 
     var orbitControls = new THREE.OrbitControls(camera);
     orbitControls.autoRotate = true;
@@ -153,7 +168,24 @@ function play() {
         varyBuildingHeight(newBuildingsArr[i], bassFr, treFr, 1);
       }
 
-      document.body.style.background = 'linear-gradient(150deg, #e2f1ff, #000000)';
+      let generateRandomHSL1 = function() {
+        let h = Math.random() * 100;
+        let s = Math.random() * 100;
+        let l = 75 - bassFr;
+        let colour = hsla(h, s, l);
+        return colour;
+      }
+
+      let generateRandomHSL2 = function() {
+        let h = Math.random() * 100;
+        let s = Math.random() * 100;
+        let l = 75 - bassFr;
+        let colour = hsla(h, s, l);
+        return colour;
+      }
+
+      // document.body.style.background = 'linear-gradient(150deg, hsl(' + Math.random() * 100 + ',' + Math.random() * 100 + ',' + Math.random() * 100 + '), #000000)';
+      document.body.style.background = 'linear-gradient(150deg, #001f56, #000000)';
 
 
       // for (let i = 0; i < lampheads.length; i++) {
