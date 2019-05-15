@@ -55,7 +55,7 @@ if (guiEnabled) {
   //     showWireframe(value);
   //   });
 
-  let interactionControls = gui.addFolder("Appearance");
+  let appearanceControls = gui.addFolder("Appearance");
 
   // interactionControls
   //   .add(guiControls, "rotate")
@@ -81,11 +81,11 @@ if (guiEnabled) {
   //   .onChange(function(value) {
   //     movingSphere = value;
   //   });
-  interactionControls
+  appearanceControls
     .add(guiControls, "scene", ["city - day", "city - evening", "city - night", "nature", "???", "!!!"])
     .name("scene")
     .onChange(function(value) {
-      // pinCloth(value);
+      // setCity(value);
     });
 
   // let behaviorControls = gui.addFolder("Behavior");
@@ -146,8 +146,8 @@ if (guiEnabled) {
   //   .onChange(function(value) {
   //     groundMaterial.specular.setHex(value);
   //   });
-  // appearanceControls.addColor(guiControls, "fogColor").onChange(function(value) {
-  //   scene.fog.color.setHex(value);
-  //   renderer.setClearColor(scene.fog.color);
-  // });
+  appearanceControls.addColor(guiControls, "fogColor").onChange(function(value) {
+    scene.fog.color.setHex(value);
+    renderer.setClearColor(scene.fog.color);
+  });
 }

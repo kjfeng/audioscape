@@ -48,6 +48,8 @@ function play() {
     camera.lookAt(scene.position);
     scene.add(camera);
 
+    scene.fog	= new THREE.FogExp2( 0xd0e0f0, 0.0020 );
+
     var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     // // floor creation
@@ -61,7 +63,8 @@ function play() {
     // some fog
     // scene.fog	= new THREE.FogExp2( 0xd0e0f0, 0.0020 );
 
-    scene.fog	= new THREE.FogExp2( 0x000000, 0.0020 );
+
+    // renderer.setClearColor(scene.fog.color);
 
     // // floor
     // var plane = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -75,48 +78,52 @@ function play() {
     // group.add(plane2);
 
     // GENERATE THE GOODS
-
     var sidewalksEmpty = [];
-    let sidewalks = generateSidewalks(sidewalksEmpty);
-    for (let i = 0; i < sidewalks.length; i++) {
-      scene.add(sidewalks[i]);
-    }
+    var newBuildingsArr = [];
 
-    let buildings = [];
-    let newBuildingsArr = generateBlockCity(buildings);
-    for (let i = 0; i < newBuildingsArr.length; i++) {
-      scene.add(newBuildingsArr[i]);
-    }
+    // function setCity(choice) {
+    //   if (choice == "city - day") {
 
-    let cityGround = generateSquareGround();
-    scene.add(cityGround);
+        sidewalks = generateSidewalks(sidewalksEmpty);
+        for (let i = 0; i < sidewalks.length; i++) {
+          scene.add(sidewalks[i]);
+        }
 
-    var lampheads = [];
-    let lampsMesh = generateLamps(lampheads);
+        let buildings = [];
+        newBuildingsArr = generateBlockCity(buildings);
+        for (let i = 0; i < newBuildingsArr.length; i++) {
+          scene.add(newBuildingsArr[i]);
+        }
 
-    scene.add(lampsMesh);
+        let cityGround = generateSquareGround();
+        scene.add(cityGround);
 
-    // var lampheads = [];
-    // let lampHeadMeshes = generateLampLights(lampheads);
-    // scene.add(lampHeadMeshes);
+        let lamps3d = generateLampPoles();
+        scene.add(lamps3d);
+
+        var lampheads = [];
+        let lampLightArr = generateLampLights(lampheads);
+        for (let i = 0; i < lampLightArr.length; i++) {
+          scene.add(lampLightArr[i]);
+        }
 
 
     var ambientLight = new THREE.AmbientLight(0xaaaaaa);
     scene.add(ambientLight);
 
-    // var spotLight = new THREE.SpotLight(0xffffff);
-    // spotLight.intensity = 0.9;
-    // spotLight.position.set(-10, 1000, 20);
-    // // spotLight.lookAt(cube); // ball
-    // spotLight.castShadow = true;
-    // scene.add(spotLight);
-
-    var sun = new THREE.SpotLight(0xe8dc00);
-    sun.intensity = 0.5;
-    sun.position.set(-100, 0, 20);
+    var spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.intensity = 0.9;
+    spotLight.position.set(-10, 1000, 20);
     // spotLight.lookAt(cube); // ball
-    sun.castShadow = true;
-    scene.add(sun);
+    spotLight.castShadow = true;
+    scene.add(spotLight);
+
+    // var sun = new THREE.SpotLight(0xe8dc00);
+    // sun.intensity = 0.5;
+    // sun.position.set(-100, 0, 20);
+    // // spotLight.lookAt(cube); // ball
+    // sun.castShadow = true;
+    // scene.add(sun);
 
     var orbitControls = new THREE.OrbitControls(camera);
     orbitControls.autoRotate = true;
@@ -159,6 +166,11 @@ function play() {
       // makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
 
 
+      //   }
+      // }
+
+
+
       for (let i = 0; i < sidewalks.length; i++ ) {
         varySidewalkSize(sidewalks[i], bassFr, treFr, 1);
       }
@@ -167,6 +179,11 @@ function play() {
       for (let i = 0; i < newBuildingsArr.length; i++ ) {
         varyBuildingHeight(newBuildingsArr[i], bassFr, treFr, 1);
       }
+
+      for (let i = 0; i < lampLightArr.length; i++ ) {
+        varyLampColour(lampLightArr[i], bassFr, treFr);
+      }
+
 
       let generateRandomHSL1 = function() {
         let h = Math.random() * 100;
@@ -185,12 +202,6 @@ function play() {
       }
 
       // document.body.style.background = 'linear-gradient(150deg, hsl(' + Math.random() * 100 + ',' + Math.random() * 100 + ',' + Math.random() * 100 + '), #000000)';
-      document.body.style.background = 'linear-gradient(150deg, #001f56, #000000)';
-
-
-      // for (let i = 0; i < lampheads.length; i++) {
-      //   varyLampColour(lampheads[i], modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
-      // }
 
 
       // CONTROLS AUTO ROTATION
@@ -243,16 +254,10 @@ function play() {
         mesh.geometry.computeFaceNormals();
     }
 
-    function varyLampColour(lamphead, bassFr, treFr) {
+    function varyLampColour(lampLightMesh, bassFr, treFr) {
 
-      // for (let i = 0; i < lamphead.geometry.faces.length; i++ ) {
-      //   lamphead.material.color.setRGB(0, 0, 1);
-      // }
-      lamphead.material.color.setRGB(1, 1, 1);
-
-      lamphead.geometry.coloursNeedUpdate = true;
-      lamphead.material.needsUpdate = true;
-
+      lampLightMesh.material.color.setRGB(Math.random(), Math.random(), Math.random());
+      lampLightMesh.material.needsUpdate = true;
     }
 
     function varySidewalkSize(mesh, bassFr, treFr, initialSize) {
@@ -340,7 +345,7 @@ function animate() {
     // renderer.render( scene, camera );
 
     lastTime = time;
-  }
+}
 
 
 //some helper functions here

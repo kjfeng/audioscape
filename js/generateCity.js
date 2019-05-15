@@ -135,14 +135,11 @@ let generateSquareGround	= function() {
   return ground;
 }
 
-// var lampGeometry= new THREE.CubeGeometry( 0.1, 3, 0.1 );
-// var lampMesh	= new THREE.Mesh(lampGeometry );
 
-
-let generateLamps	= function(lampheads) {
+let generateLampPoles	= function() {
   var object3d	= new THREE.Object3D()
 
-  var lampGeometry= new THREE.CubeGeometry(1,1,1)
+  var lampGeometry= new THREE.BoxGeometry(1,1,1)
   lampGeometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
   var lampMesh	= new THREE.Mesh(lampGeometry)
 
@@ -152,51 +149,36 @@ let generateLamps	= function(lampheads) {
     for( var blockX = 0; blockX < nBlockX; blockX++){
       // lampMesh.position.x	= 0
       // lampMesh.position.z	= 0
-      function addLamp(position) {
+      function addLamp(position){
         //////////////////////////////////////////////////////////////////////////////////
-        //		head light						//
+        //		light								//
         //////////////////////////////////////////////////////////////////////////////////
 
-        // var lampHeadMaterial	= new THREE.MeshLambertMaterial({
-        //   color	: 0xffffff
-        // });
-        // var lampHeadMesh = new THREE.Mesh(lampGeometry, lampHeadMaterial);
-        // lampHeadMesh.position.copy(position)
-        // lampHeadMesh.position.y	= sidewalkH+lampH
-        // // add pole offset
-        // lampHeadMesh.scale.set(1,1,1);
-        // // set position for block
-        // lampHeadMesh.position.x	+= (blockX+0.5-nBlockX/2)*blockSizeX
-        // lampHeadMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
-        // // merge it with cityGeometry - very important for performance
-        //
-        // let lampHeadClone = lampHeadMesh.clone();
-        //
-        // lampsGeometry.mergeMesh( lampHeadMesh );
-        //
-        // lampheads.push( lampHeadClone );
-
-
-        // set base position
-        lampMesh.position.copy(position)
-        lampMesh.position.y	= sidewalkH+lampH
-        // add poll offset
-        lampMesh.scale.set(0.35,0.35,0.35);
-
-        // colorify
-        for(var i = 0; i < lampMesh.geometry.faces.length; i++ ) {
-          lampMesh.geometry.faces[i].color.set('white');
-        }
+        var lightPosition	= position.clone()
+        lightPosition.y		= sidewalkH+lampH+0.1
         // set position for block
-        lampMesh.position.x	+= (blockX+0.5-nBlockX/2)*blockSizeX
-        lampMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
-        // merge it with cityGeometry - very important for performance
+        lightPosition.x		+= (blockX+0.5-nBlockX/2)*blockSizeX
+        lightPosition.z		+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
 
-        let lampHeadClone = lampMesh.clone();
+        lightsGeometry.vertices.push(lightPosition );
+        //////////////////////////////////////////////////////////////////////////////////
+        //		head light						//   REMOVED
+        //////////////////////////////////////////////////////////////////////////////////
 
-        lampsGeometry.mergeMesh( lampMesh );
-
-        lampheads.push( lampHeadClone );
+        // // set base position
+        // lampMesh.position.copy(position)
+        // lampMesh.position.y	= sidewalkH+lampH
+        // // add poll offset
+        // lampMesh.scale.set(0.2,0.2,0.2)
+        // // colorify
+        // for(var i = 0; i < lampMesh.geometry.faces.length; i++ ) {
+        //   lampMesh.geometry.faces[i].color.set('white' );
+        // }
+        // // set position for block
+        // lampMesh.position.x	+= (blockX+0.5-nBlockX/2)*blockSizeX
+        // lampMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
+        // // merge it with cityGeometry - very important for performance
+        // lampsGeometry.mergeMesh( lampMesh )
 
         //////////////////////////////////////////////////////////////////////////////////
         //		pole								//
@@ -234,11 +216,6 @@ let generateLamps	= function(lampheads) {
         lampMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
         // merge it with cityGeometry - very important for performance
         lampsGeometry.mergeMesh( lampMesh );
-        // // put singe lamp mesh in array
-        // let singleLampMesh = new THREE.Mesh(lampsGeometry);
-        // let lamp3d = new THREE.Object3D();
-        // lamp3d.add(singleLampMesh)
-        // lampsArray.push(lamp3d);
       }
       // south
       var position	= new THREE.Vector3()
@@ -275,15 +252,18 @@ let generateLamps	= function(lampheads) {
   var lampsMesh	= new THREE.Mesh(lampsGeometry, material );
   object3d.add(lampsMesh)
 
-  return object3d;
+  return object3d
 }
 
 let generateLampLights	= function(lampheads) {
-  var object3d	= new THREE.Object3D()
+  var lampHeadAll = new THREE.Geometry();
 
-  var lampGeometry= new THREE.CubeGeometry(1,1,1)
+  var lampGeometry= new THREE.BoxGeometry(1,1,1)
   lampGeometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
-  // var lampMesh	= new THREE.Mesh(lampGeometry)
+  // // build material
+  // var lampHeadMaterial	= new THREE.MeshLambertMaterial({
+  //   color	: 0xffffff
+  // });
 
 
   for( var blockZ = 0; blockZ < nBlockZ; blockZ++) {
@@ -296,13 +276,14 @@ let generateLampLights	= function(lampheads) {
         //////////////////////////////////////////////////////////////////////////////////
 
         var lampHeadMaterial	= new THREE.MeshLambertMaterial({
-          color	: 0xff0000
+          color	: 0xffffff
         });
+
         var lampHeadMesh = new THREE.Mesh(lampGeometry, lampHeadMaterial);
         lampHeadMesh.position.copy(position)
         lampHeadMesh.position.y	= sidewalkH+lampH
         // add pole offset
-        lampHeadMesh.scale.set(0.2,0.2,0.2);
+        lampHeadMesh.scale.set(0.35,0.35,0.35);
         // set position for block
         lampHeadMesh.position.x	+= (blockX+0.5-nBlockX/2)*blockSizeX
         lampHeadMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
@@ -310,43 +291,23 @@ let generateLampLights	= function(lampheads) {
         lampHeadAll.mergeMesh( lampHeadMesh );
         lampheads.push( lampHeadMesh );
 
-
-        // // set base position
-        // lampMesh.position.copy(position)
-        // lampMesh.position.y	= sidewalkH+lampH
-        // // add poll offset
-        // lampMesh.scale.set(0.2,0.2,0.2);
-        //
-        // // colorify
-        // for(var i = 0; i < lampMesh.geometry.faces.length; i++ ) {
-        //   lampMesh.geometry.faces[i].color.set('white');
-        // }
-        // // set position for block
-        // lampMesh.position.x	+= (blockX+0.5-nBlockX/2)*blockSizeX
-        // lampMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
-        // // merge it with cityGeometry - very important for performance
-        //
-        // let lampHeadClone = lampMesh.clone();
-        //
-        // lampsGeometry.mergeMesh( lampMesh );
-        //
-        // lampheads.push( lampHeadClone );
+      }
 
       // south
       var position	= new THREE.Vector3()
-      for(var i = 0; i < lampDensityW+1; i++){
+      for(var i = 0; i < lampDensityW+1; i++) {
         position.x	= (i/lampDensityW-0.5)*(blockSizeX-roadW-sidewalkW)
         position.z	= -0.5*(blockSizeZ-roadD-sidewalkD)
         addLamp(position)
       }
       // north
-      for(var i = 0; i < lampDensityW+1; i++){
+      for(var i = 0; i < lampDensityW+1; i++) {
         position.x	= (i/lampDensityW-0.5)*(blockSizeX-roadW-sidewalkW)
         position.z	= +0.5*(blockSizeZ-roadD-sidewalkD)
         addLamp(position)
       }
       // east
-      for(var i = 1; i < lampDensityD; i++){
+      for(var i = 1; i < lampDensityD; i++) {
         position.x	= +0.5*(blockSizeX-roadW-sidewalkW)
         position.z	= (i/lampDensityD-0.5)*(blockSizeZ-roadD-sidewalkD)
         addLamp(position)
@@ -359,13 +320,9 @@ let generateLampLights	= function(lampheads) {
       }
     }
   }
+  return lampheads;
 }
-// var lampHeadAll	= new THREE.Geometry();
-var allLampHeadMeshes	= new THREE.Mesh(lampHeadAll);
-// object3d.add(lampsMesh)
 
-return allLampHeadMeshes;
-}
 
 let generateSidewalks	= function( sidewalksArr ) {
   // var sidewalkMesh = new THREE.Mesh(getBox());
