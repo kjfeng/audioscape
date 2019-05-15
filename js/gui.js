@@ -5,8 +5,8 @@ if (guiEnabled) {
   // GUI properties
   guiControls = new (function() {
     // this.fabricLength = fabricLength;
-    this.wireframe = true;
-    this.scene = initScene;
+    // this.wireframe = true;
+    this.sceneType = initScene;
 
     // this.rotate = rotate;
     // this.wind = wind;
@@ -31,7 +31,7 @@ if (guiEnabled) {
     // this.groundColor = 0x404761;
     // this.groundSpecular = 0x404761;
 
-    this.fogColor = 0xd0e0f0;
+    // this.fogColor = 0xd0e0f0;
   })();
 
   // GUI elements
@@ -82,10 +82,10 @@ if (guiEnabled) {
   //     movingSphere = value;
   //   });
   appearanceControls
-    .add(guiControls, "scene", ["city - day", "city - evening", "city - night", "nature", "???", "!!!"])
-    .name("scene")
+    .add(guiControls, "sceneType", ["city - day", "city - evening", "city - night", "nature"])
+    .name("sceneType")
     .onChange(function(value) {
-      // setCity(value);
+      sceneType = value;
     });
 
   // let behaviorControls = gui.addFolder("Behavior");
@@ -146,8 +146,8 @@ if (guiEnabled) {
   //   .onChange(function(value) {
   //     groundMaterial.specular.setHex(value);
   //   });
-  appearanceControls.addColor(guiControls, "fogColor").onChange(function(value) {
-    scene.fog.color.setHex(value);
-    renderer.setClearColor(scene.fog.color);
-  });
+  // appearanceControls.addColor(guiControls, "fogColor").onChange(function(value) {
+  //   scene.fog.color.setHex(value);
+  //   renderer.setClearColor(scene.fog.color);
+  // });
 }

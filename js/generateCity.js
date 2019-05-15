@@ -32,6 +32,12 @@ let getBox = function() {
   return box;
 }
 
+var cone = new THREE.ConeGeometry();
+cone.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
+let getCone = function() {
+  return cone;
+}
+
 // vanilla city
 let generateVanillaCity = function(buildingsArray) {
 
@@ -407,4 +413,100 @@ function generateTexture() {
   context.drawImage( canvas, 0, 0, canvas2.width, canvas2.height );
   // return the just built canvas2
   return canvas2;
+}
+
+// tree scene
+let generateNature = function(buildingsArray) {
+  var cityGeometry= new THREE.Geometry();
+
+  // // more texture stuff
+  // // generate the texture
+  var texture = new THREE.Texture( generateTreeTexture() );
+  // texture.anisotropy = renderer.getMaxAnisotropy();
+  texture.needsUpdate = true;
+  // var loader = new THREE.TextureLoader();
+  // var texture = loader.load( "textures/tree-texture.jpg" ); // grasslight-big.jpg
+  // texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  // texture.repeat.set( 25, 25 );
+  // texture.anisotropy = 16;
+  // texture.needsUpdate = true;
+
+  // make 10 000 buildings
+  for (var i = 0; i < 500; i++ ) {
+      // material.color.setRGB(Math.random(), Math.random(), Math.random());
+      // build the material
+      // material = new THREE.MeshPhongMaterial({
+      //   color: 0xaa2929,
+      //   specular: 0x030303,
+      //   wireframeLinewidth: 2,
+      //   map: texture,
+      //   side: THREE.DoubleSide,
+      //   alphaTest: 0.5,
+      // });
+      var material = new THREE.MeshBasicMaterial({
+        map : texture,
+        // color: 0x4ac4b6,
+        // vertexColors : THREE.VertexColors
+      });
+      let randomGray = Math.random() + 0.5;
+      if (randomGray > 1) randomGray = 1;
+      // material.color.setRGB(randomGray, randomGray, randomGray);
+      var buildingMesh = new THREE.Mesh(getCone(), material); // new THREE.ConeGeometry( 1, 1, 1 )
+      // put a random position
+      buildingMesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
+      buildingMesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
+      // put a random rotation
+      buildingMesh.rotation.y = Math.random()*Math.PI*2;
+      // put a random scale
+      // MODIFY THIS FOR BUILDING SIZE?
+      buildingMesh.scale.x    = Math.random() * Math.random() * Math.random() * Math.random() + 2;
+      buildingMesh.scale.y    = (Math.random() * Math.random() * Math.random() * buildingMesh.scale.x) + 4;
+      buildingMesh.scale.z    = buildingMesh.scale.x;
+
+      // merge it with cityGeometry - very important for performance
+      cityGeometry.mergeMesh(buildingMesh);
+      buildingsArray.push(buildingMesh);
+  }
+  return buildingsArray;
+}
+
+function generateTreeTexture() {
+var canvas = document.createElement( 'canvas' );
+canvas.width = 32;
+canvas.height = 64;
+var context = canvas.getContext('2d');
+
+// make_base(context);
+
+  // plain it in some shade of gray
+  // let grayRand = Math.round(Math.random() * 255);
+  // let randomGray = rgb(redRand, blueRand, greenRand);
+  context.fillStyle = 'rgb('+ 34 +', '+ 139 +', '+ 34 +')'; //34,139,34
+  context.fillRect( 0, 0, 32, 64 );
+  // draw the window rows - with a small noise to simulate light variations in each room
+  for (var y = 2; y < 256; y += 1 ) {
+      for (var x = 0; x < 128; x += 1 ) {
+          var Rvalue   = 34 + Math.floor( Math.random() * 64 );
+          var Gvalue   = 139 + Math.floor( Math.random() * 64 );
+          var Bvalue   = 34 + Math.floor( Math.random() * 64 );
+          context.fillStyle = 'rgb(' + [Rvalue, Gvalue, Bvalue].join( ',' )  + ')';
+          context.fillRect( x, y, 2, 1 );
+      }
+  }
+
+// build a bigger canvas and copy the small one in it
+  // This is a trick to upscale the texture without filtering
+  var canvas2 = document.createElement( 'canvas' );
+  canvas2.width    = 512;
+  canvas2.height   = 1024;
+  context = canvas2.getContext( '2d' );
+  // disable smoothing
+  context.imageSmoothingEnabled        = false;
+  context.webkitImageSmoothingEnabled  = false;
+  context.mozImageSmoothingEnabled = false;
+  // then draw the image
+  context.drawImage( canvas, 0, 0, canvas2.width, canvas2.height );
+  // return the just built canvas2
+  return canvas2;
+
 }

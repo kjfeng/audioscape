@@ -1,5 +1,5 @@
 //initialise simplex noise instance
-var noise = new SimplexNoise();
+var sceneType = "city - day";
 // random hsl for later
 var randomH1 = Math.random() * 100;
 var randomH1 = Math.random() * 100;
@@ -52,19 +52,9 @@ function play() {
 
     var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    // // floor creation
-    // var planeGeometry = new THREE.PlaneGeometry(800, 800, 20, 20);
-    // var planeMaterial = new THREE.MeshLambertMaterial({
-    //     color: 0x6904ce,
-    //     side: THREE.DoubleSide,
-    //     wireframe: true
-    // });
-
-    // some fog
-    // scene.fog	= new THREE.FogExp2( 0xd0e0f0, 0.0020 );
 
 
-    // renderer.setClearColor(scene.fog.color);
+
 
     // // floor
     // var plane = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -77,12 +67,28 @@ function play() {
     // plane2.position.set(0, -30, 0);
     // group.add(plane2);
 
+    // // forest floor creation and material
+    // var planeGeometry = new THREE.PlaneGeometry(8000, 8000, 200, 200);
+    // var planeMaterial = new THREE.MeshLambertMaterial({
+    //     color: 0xff0000,
+    //     side: THREE.DoubleSide,
+    //     // wireframe: true
+    // });
+
+    // forest floor
+
+
+
     // GENERATE THE GOODS
     var sidewalksEmpty = [];
     var newBuildingsArr = [];
+    var lampLightArr = [];
 
-    // function setCity(choice) {
-    //   if (choice == "city - day") {
+    var ambientLight = new THREE.AmbientLight(0xaaaaaa);
+    scene.add(ambientLight);
+
+    // CONDITIONALS FOR SCENES
+    if (sceneType === "city - day") {
 
         sidewalks = generateSidewalks(sidewalksEmpty);
         for (let i = 0; i < sidewalks.length; i++) {
@@ -102,21 +108,48 @@ function play() {
         scene.add(lamps3d);
 
         var lampheads = [];
-        let lampLightArr = generateLampLights(lampheads);
+        lampLightArr = generateLampLights(lampheads);
         for (let i = 0; i < lampLightArr.length; i++) {
           scene.add(lampLightArr[i]);
         }
 
+        var ambientLight = new THREE.AmbientLight(0xaaaaaa);
+        scene.add(ambientLight);
 
-    var ambientLight = new THREE.AmbientLight(0xaaaaaa);
-    scene.add(ambientLight);
+        var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.intensity = 0.9;
+        spotLight.position.set(-10, 1000, 20);
+        // spotLight.lookAt(cube); // ball
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+    }
 
-    var spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.intensity = 0.9;
-    spotLight.position.set(-10, 1000, 20);
-    // spotLight.lookAt(cube); // ball
-    spotLight.castShadow = true;
-    scene.add(spotLight);
+    if (sceneType === "nature") {
+
+      let emptyTreeArr = [];
+      newBuildingsArr = generateNature(emptyTreeArr);
+      for (let i = 0; i < newBuildingsArr.length; i++) {
+        scene.add(newBuildingsArr[i]);
+      }
+
+      // floor creation
+      var planeGeometry = new THREE.PlaneGeometry(800, 800, 20, 20);
+      if (sceneType === 'nature') {
+        var planeMaterial = new THREE.MeshLambertMaterial({
+            color: 0x266a2e,
+            side: THREE.DoubleSide,
+            wireframe: false
+        });
+      }
+
+      var floor = new THREE.Mesh(planeGeometry, planeMaterial);
+      floor.rotation.x = -0.5 * Math.PI;
+      floor.position.set(0, 0, 0);
+      scene.add(floor);
+
+    }
+
+
 
     // var sun = new THREE.SpotLight(0xe8dc00);
     // sun.intensity = 0.5;
@@ -128,6 +161,7 @@ function play() {
     var orbitControls = new THREE.OrbitControls(camera);
     orbitControls.autoRotate = true;
 
+    // FIRST PERSON CONTROLS
     // controls = new THREE.FirstPersonControls( camera );
     // controls.movementSpeed = 20;
     // controls.lookSpeed = 0.05;
@@ -171,18 +205,27 @@ function play() {
 
 
 
-      for (let i = 0; i < sidewalks.length; i++ ) {
-        varySidewalkSize(sidewalks[i], bassFr, treFr, 1);
-      }
+      // for (let i = 0; i < sidewalks.length; i++ ) {
+      //   varySidewalkSize(sidewalks[i], bassFr, treFr, 1);
+      // }
 
       // CITY
-      for (let i = 0; i < newBuildingsArr.length; i++ ) {
-        varyBuildingHeight(newBuildingsArr[i], bassFr, treFr, 1);
+      if (sceneType === "city - day") {
+        for (let i = 0; i < newBuildingsArr.length; i++ ) {
+          varyBuildingHeight(newBuildingsArr[i], bassFr, treFr, 1);
+        }
+
+        for (let i = 0; i < lampLightArr.length; i++ ) {
+          varyLampColour(lampLightArr[i], bassFr, treFr);
+        }
       }
 
-      for (let i = 0; i < lampLightArr.length; i++ ) {
-        varyLampColour(lampLightArr[i], bassFr, treFr);
+      if (sceneType === "nature") {
+        for (let i = 0; i < newBuildingsArr.length; i++ ) {
+          varyTreeHeight(newBuildingsArr[i], bassFr, treFr, 50);
+        }
       }
+
 
 
       let generateRandomHSL1 = function() {
@@ -245,9 +288,6 @@ function play() {
               }
             }
 
-            // mesh.geometry.parameters.height = height * 0;
-            // mesh.geometry.parameters.height.multiplyScalar(distance);
-        // });
         mesh.geometry.verticesNeedUpdate = true;
         mesh.geometry.normalsNeedUpdate = true;
         mesh.geometry.computeVertexNormals();
@@ -260,59 +300,36 @@ function play() {
       lampLightMesh.material.needsUpdate = true;
     }
 
-    function varySidewalkSize(mesh, bassFr, treFr, initialSize) {
+    function varyTreeHeight(mesh, bassFr, treFr, initialY) {
+        // mesh.geometry.vertices.forEach(function (vertex, i) {
+            initialY = 50;
+            var offset = mesh.geometry.parameters.width;
+            var amp = 7;
+            var time = window.performance.now();
+            // vertex = mesh.geometry.vertices[1];
+            var topVertices = [
+              mesh.geometry.vertices[0]
+            ];
+            for (let i = 0; i < 1; i++) {
+              topVertices[i].y = initialY;
+            }
+            height = mesh.geometry.parameters.height;
+            var rf = 0.00001;
+            // var distance = (offset + bassFr ) + noise.noise3D(topVertices[0].x + time *rf*7, topVertices[0].y +  time*rf*8, topVertices[0].z + time*rf*9) * amp * treFr;
 
-      var offset = mesh.geometry.parameters.width;
-      var amp = 7;
-      var time = window.performance.now();
-      // vertex = mesh.geometry.vertices[1];
-      var topVertices = [
-        mesh.geometry.vertices[0],
-        mesh.geometry.vertices[1],
-        mesh.geometry.vertices[4],
-        mesh.geometry.vertices[5]
-      ];
-      for (let i = 0; i < 4; i++) {
-        topVertices[i].y = initialSize;
-      }
-      // height = mesh.geometry.parameters.height;
-      var rf = 0.00001;
-      // var distance = (offset + bassFr ) + noise.noise3D(topVertices[0].x + time *rf*7, topVertices[0].y +  time*rf*8, topVertices[0].z + time*rf*9) * amp * treFr;
+            var distance = bassFr + treFr;
 
-      var distance = bassFr + treFr;
+            for (let i = 0; i < 1; i++) {
+              topVertices[i].y *= (distance * 0.1);
+              if (topVertices[i].y < initialY) {
+                topVertices[i].y = initialY;
+              }
+            }
 
-      for (let i = 0; i < 4; i++) {
-        topVertices[i].y += (distance * 0.01);
-        if (topVertices[i].y < initialSize) {
-          topVertices[i].y = initialSize;
-        }
-      }
-
-      // mesh.geometry.parameters.height = height * 0;
-      // mesh.geometry.parameters.height.multiplyScalar(distance);
-  // });
-  mesh.geometry.verticesNeedUpdate = true;
-  mesh.geometry.normalsNeedUpdate = true;
-  mesh.geometry.computeVertexNormals();
-  mesh.geometry.computeFaceNormals();
-
-      // var rf = 0.00001;
-      //
-      // var distance = bassFr + treFr;
-      //
-      // for (let i = 0; i < mesh.geometry.vertices.length; i++) {
-      //   mesh.geometry.vertices[i].x *= (distance * 0.01);
-      //   mesh.geometry.vertices[i].y *= (distance * 0.01);
-      //   mesh.geometry.vertices[i].z *= (distance * 0.01);
-      //   if (mesh.geometry.vertices[i].x < initialSize) mesh.geometry.vertices[i].x = initialSize;
-      //   if (mesh.geometry.vertices[i].y < initialSize) mesh.geometry.vertices[i].y = initialSize;
-      //   if (mesh.geometry.vertices[i].z < initialSize) mesh.geometry.vertices[i].z = initialSize;
-      // }
-      // // updates
-      // mesh.geometry.verticesNeedUpdate = true;
-      // mesh.geometry.normalsNeedUpdate = true;
-      // mesh.geometry.computeVertexNormals();
-      // mesh.geometry.computeFaceNormals();
+            mesh.geometry.verticesNeedUpdate = true;
+            mesh.geometry.normalsNeedUpdate = true;
+            mesh.geometry.computeVertexNormals();
+            mesh.geometry.computeFaceNormals();
     }
 
     function makeRoughGround(mesh, distortionFr) {
@@ -337,12 +354,8 @@ window.onload = vizInit();
 document.body.addEventListener('touchend', function(ev) { context.resume(); });
 
 function animate() {
-    // requestAnimationFrame( animate );
 
     var time = performance.now() / 1000;
-
-    // controls.update( time - lastTime );
-    // renderer.render( scene, camera );
 
     lastTime = time;
 }
