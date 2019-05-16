@@ -128,6 +128,96 @@ let generateBlockCityDay = function(buildingsArray) {
   return buildingsArray;
 }
 
+let generateBlockCityEvening = function(buildingsArray) {
+
+  var cityGeometry= new THREE.Geometry();
+  // more texture stuff
+  // generate the texture
+  var texture = new THREE.Texture( generateTexture() );
+  // texture.anisotropy = renderer.getMaxAnisotropy();
+  texture.needsUpdate = true;
+
+  // make 10 000 buildings
+  for( var blockZ = 0; blockZ < nBlockZ; blockZ++) {
+    for( var blockX = 0; blockX < nBlockX; blockX++) {
+      for( var i = 0; i < blockDensity; i++) {
+        // build the material
+        var material = new THREE.MeshLambertMaterial({
+          map : texture,
+          vertexColors : THREE.VertexColors
+        });
+        let randomGray = 0.5 + Math.random() * 0.3;
+        material.color.setRGB(randomGray, randomGray, randomGray);
+        var buildingMesh = new THREE.Mesh(box, material);
+        // put a random position
+        // set position
+        buildingMesh.position.x	= (Math.random()-0.5)*(blockSizeX-buildingMaxW-roadW-sidewalkW)
+        buildingMesh.position.z	= (Math.random()-0.5)*(blockSizeZ-buildingMaxD-roadD-sidewalkD)
+
+        // add position for the blocks
+        buildingMesh.position.x	+= (blockX+0.5-nBlockX/2)*blockSizeX
+        buildingMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
+
+        // put a random scale
+        buildingMesh.scale.x	= Math.min(Math.random() * 5 + 10, buildingMaxW);
+        buildingMesh.scale.y	= (Math.random() * Math.random() * buildingMesh.scale.x) * 5 + 5;
+        buildingMesh.scale.z	= Math.min(buildingMesh.scale.x, buildingMaxD)
+
+        // merge it with cityGeometry - very important for performance
+        cityGeometry.mergeMesh(buildingMesh);
+        buildingsArray.push(buildingMesh);
+      }
+    }
+  }
+  // let cityMesh = new THREE.Mesh(cityGeometry);
+  return buildingsArray;
+}
+
+let generateBlockCityNight = function(buildingsArray) {
+
+  var cityGeometry= new THREE.Geometry();
+  // more texture stuff
+  // generate the texture
+  var texture = new THREE.Texture( generateNightTexture() );
+  // texture.anisotropy = renderer.getMaxAnisotropy();
+  texture.needsUpdate = true;
+
+  // make 10 000 buildings
+  for( var blockZ = 0; blockZ < nBlockZ; blockZ++) {
+    for( var blockX = 0; blockX < nBlockX; blockX++) {
+      for( var i = 0; i < blockDensity; i++) {
+        // build the material
+        var material = new THREE.MeshLambertMaterial({
+          map : texture,
+          vertexColors : THREE.VertexColors
+        });
+        let randomGray = 0.3 + Math.random() * 0.3;
+        material.color.setRGB(randomGray, randomGray, randomGray);
+        var buildingMesh = new THREE.Mesh(box, material);
+        // put a random position
+        // set position
+        buildingMesh.position.x	= (Math.random()-0.5)*(blockSizeX-buildingMaxW-roadW-sidewalkW)
+        buildingMesh.position.z	= (Math.random()-0.5)*(blockSizeZ-buildingMaxD-roadD-sidewalkD)
+
+        // add position for the blocks
+        buildingMesh.position.x	+= (blockX+0.5-nBlockX/2)*blockSizeX
+        buildingMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
+
+        // put a random scale
+        buildingMesh.scale.x	= Math.min(Math.random() * 5 + 10, buildingMaxW);
+        buildingMesh.scale.y	= (Math.random() * Math.random() * buildingMesh.scale.x) * 5 + 5;
+        buildingMesh.scale.z	= Math.min(buildingMesh.scale.x, buildingMaxD)
+
+        // merge it with cityGeometry - very important for performance
+        cityGeometry.mergeMesh(buildingMesh);
+        buildingsArray.push(buildingMesh);
+      }
+    }
+  }
+  // let cityMesh = new THREE.Mesh(cityGeometry);
+  return buildingsArray;
+}
+
 let generateSquareGround	= function() {
   var geometry	= new THREE.PlaneGeometry( 1, 1, 1 );
   var material	= new THREE.MeshLambertMaterial({
@@ -399,6 +489,49 @@ function generateTexture() {
       }
   }
 
+  // build a bigger canvas and copy the small one in it
+  // This is a trick to upscale the texture without filtering
+  var canvas2 = document.createElement( 'canvas' );
+  canvas2.width    = 512;
+  canvas2.height   = 1024;
+  var context = canvas2.getContext( '2d' );
+  // disable smoothing
+  context.imageSmoothingEnabled        = false;
+  context.webkitImageSmoothingEnabled  = false;
+  context.mozImageSmoothingEnabled = false;
+  // then draw the image
+  context.drawImage( canvas, 0, 0, canvas2.width, canvas2.height );
+  // return the just built canvas2
+  return canvas2;
+}
+
+function generateNightTexture() {
+  // build a small canvas 32x64 and paint it in white
+  var canvas  = document.createElement( 'canvas' );
+  canvas.width = 32;
+  canvas.height = 64;
+  var context = canvas.getContext( '2d' );
+  // plain it in some shade of gray
+  let grayRand = Math.round(Math.random() * 255);
+  // let randomGray = rgb(redRand, blueRand, greenRand);
+  context.fillStyle = 'rgb('+ grayRand +', '+ grayRand +', '+ grayRand +')';
+  context.fillRect( 0, 0, 32, 64 );
+  // draw the window rows - with a small noise to simulate light variations in each room
+  for (var y = 2; y < 64; y += 2 ) {
+      for (var x = 0; x < 32; x += 2 ) {
+          let random = Math.random();
+          if (random > 0.66) {
+            context.fillStyle = 'rgb(247, 231, 12)';
+            context.fillRect( x, y, 2, 1 );
+          }
+          else {
+            var value   = Math.floor( Math.random() * 64 );
+            context.fillStyle = 'rgb(' + [value, value, value].join( ',' )  + ')';
+            context.fillRect( x, y, 2, 1 );
+          }
+
+      }
+  }
   // build a bigger canvas and copy the small one in it
   // This is a trick to upscale the texture without filtering
   var canvas2 = document.createElement( 'canvas' );

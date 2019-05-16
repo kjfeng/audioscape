@@ -93,7 +93,11 @@ function play() {
     }
 
     if (sceneType === "city - evening") {
-      scene.fog	= new THREE.FogExp2( 0xafc5db, 0.0020 );
+      scene.fog	= new THREE.FogExp2( 0xc19e60, 0.0010 );
+    }
+
+    if (sceneType === "city - night") {
+      scene.fog	= new THREE.FogExp2( 0x3a3a3a, 0.0020 );
     }
 
 
@@ -173,6 +177,104 @@ function play() {
       scene.add(spotLight);
     }
 
+    if (sceneType === "city - evening") {
+
+      sidewalks = generateSidewalks(sidewalksEmpty);
+      for (let i = 0; i < sidewalks.length; i++) {
+        scene.add(sidewalks[i]);
+      }
+
+      let cityGround = generateSquareGround();
+      scene.add(cityGround);
+
+      let lamps3d = generateLampPoles();
+      scene.add(lamps3d);
+
+      var lampheads = [];
+      lampLightArr = generateLampLights(lampheads);
+      for (let i = 0; i < lampLightArr.length; i++) {
+        scene.add(lampLightArr[i]);
+      }
+      let buildings = [];
+      newBuildingsArr = generateBlockCityEvening(buildings);
+      for (let i = 0; i < newBuildingsArr.length; i++) {
+        scene.add(newBuildingsArr[i]);
+      }
+
+      var spotLight = new THREE.SpotLight(0xffffff);
+      spotLight.intensity = 0.9;
+      spotLight.position.set(-10, 500, 20);
+      spotLight.castShadow = true;
+      scene.add(spotLight);
+
+      var sun = new THREE.SpotLight(0xe8c900);
+      sun.intensity = 0.7;
+      sun.position.set(200, 200, 50);
+      sun.castShadow = true;
+      scene.add(sun);
+    }
+
+    if (sceneType === "city - night") {
+
+      sidewalks = generateSidewalks(sidewalksEmpty);
+      for (let i = 0; i < sidewalks.length; i++) {
+        scene.add(sidewalks[i]);
+      }
+
+      let cityGround = generateSquareGround();
+      scene.add(cityGround);
+
+      let lamps3d = generateLampPoles();
+      scene.add(lamps3d);
+
+      var lampheads = [];
+      lampLightArr = generateLampLights(lampheads);
+      for (let i = 0; i < lampLightArr.length; i++) {
+        scene.add(lampLightArr[i]);
+      }
+      let buildings = [];
+      newBuildingsArr = generateBlockCityNight(buildings);
+      for (let i = 0; i < newBuildingsArr.length; i++) {
+        scene.add(newBuildingsArr[i]);
+      }
+
+      var spotLight = new THREE.SpotLight(0xffffff); // white
+      spotLight.intensity = 0.9;
+      spotLight.position.set(-10, 500, 20);
+      spotLight.castShadow = true;
+      scene.add(spotLight);
+
+      var ground1 = new THREE.SpotLight(0xffe121); // yellow
+      ground1.intensity = 0.9;
+      ground1.position.set(0, 10, 0);
+      ground1.castShadow = true;
+      scene.add(ground1);
+
+      var ground2 = new THREE.SpotLight(0x1efbff); // cyan
+      ground2.intensity = 0.9;
+      ground2.position.set(-500, 10, 500);
+      ground2.castShadow = true;
+      scene.add(ground2);
+
+      var ground3 = new THREE.SpotLight(0xff60dc); // pink
+      ground3.intensity = 0.9;
+      ground3.position.set(500, 10, -500);
+      ground3.castShadow = true;
+      scene.add(ground3);
+
+      var ground4 = new THREE.SpotLight(0xff7c1e); // orange
+      ground4.intensity = 0.9;
+      ground4.position.set(-500, 10, -500);
+      ground4.castShadow = true;
+      scene.add(ground4);
+
+      var ground5 = new THREE.SpotLight(0x69ff1e); // light green
+      ground5.intensity = 0.9;
+      ground5.position.set(500, 10, 500);
+      ground5.castShadow = true;
+      scene.add(ground5);
+    }
+
     if (sceneType === "nature") {
 
       let emptyTreeArr = [];
@@ -198,15 +300,6 @@ function play() {
       scene.add(floor);
 
     }
-
-
-
-    // var sun = new THREE.SpotLight(0xe8dc00);
-    // sun.intensity = 0.5;
-    // sun.position.set(-100, 0, 20);
-    // // spotLight.lookAt(cube); // ball
-    // sun.castShadow = true;
-    // scene.add(sun);
 
     var orbitControls = new THREE.OrbitControls(camera);
     orbitControls.autoRotate = true;
@@ -256,10 +349,36 @@ function play() {
         for (let i = 0; i < lampLightArr.length; i++ ) {
           varyLampColour(lampLightArr[i], bassFr, treFr, lowerMaxFr);
         }
-        // sky
-        // document.body.style.background = 'linear-gradient(150deg, hsl(209, 100%, 94%), hsl(' + 200 + ',' + 90 + '%,' + 100 - (6 * bassFr) + '%))';
+
         document.body.style.background = 'linear-gradient(150deg, hsl(209, 100%, 94%), hsl(' + 200 + ',' + 90 + '%,' + Math.round(100 - (3 * bassFr)) + '%))';
-        console.log(6 * bassFr);
+
+      }
+
+      if (sceneType === "city - evening") {
+        // buildings
+        for (let i = 0; i < newBuildingsArr.length; i++ ) {
+          varyBuildingHeight(newBuildingsArr[i], bassFr, treFr, 1);
+        }
+        // lamps
+        for (let i = 0; i < lampLightArr.length; i++ ) {
+          varyLampColour(lampLightArr[i], bassFr, treFr, lowerMaxFr);
+        }
+
+        document.body.style.background = 'linear-gradient(150deg, hsl(215, 100%, ' + Math.round(60 - (2 * bassFr)) + '%), hsl(30, 100%, ' + Math.round(75 - (2 * bassFr)) + '%))';
+
+      }
+
+      if (sceneType === "city - night") {
+        // buildings
+        for (let i = 0; i < newBuildingsArr.length; i++ ) {
+          varyBuildingHeight(newBuildingsArr[i], bassFr, treFr, 1);
+        }
+        // lamps
+        for (let i = 0; i < lampLightArr.length; i++ ) {
+          varyLampColour(lampLightArr[i], bassFr, treFr, lowerMaxFr);
+        }
+
+        document.body.style.background = 'linear-gradient(150deg, hsl(215, 100%, 0%), hsl(225, 100%, ' + Math.round(35 - (2 * bassFr)) + '%))';
 
       }
 
@@ -325,6 +444,22 @@ function play() {
 
         lampLightMesh.material.color.setHSL(lampDayH, lampDayS, newLum);
         lampLightMesh.material.needsUpdate = true;
+      }
+
+      if (sceneType === "city - evening") {
+        let newH = 0.0875 + (bassFr / 300 * lowerMaxFr);
+        // console.log(newLum);
+
+        lampLightMesh.material.color.setHSL(newH, 1, 0.5);
+        lampLightMesh.material.needsUpdate = true;
+      }
+
+      if (sceneType === "city - night") {
+        if (bassFr > 8.5) {
+          lampLightMesh.material.color.setRGB(Math.random(), Math.random(), Math.random());
+          lampLightMesh.material.needsUpdate = true;
+        }
+
       }
 
 
