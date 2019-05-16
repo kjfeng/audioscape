@@ -364,7 +364,7 @@ function play() {
           varyLampColour(lampLightArr[i], bassFr, treFr, lowerMaxFr);
         }
 
-        document.body.style.background = 'linear-gradient(150deg, hsl(215, 100%, ' + Math.round(60 - (2 * bassFr)) + '%), hsl(30, 100%, ' + Math.round(75 - (2 * bassFr)) + '%))';
+        document.body.style.background = 'linear-gradient(150deg, hsl(215, 100%, ' + Math.round(60 - (2 * bassFr)) + '%), hsl(30, 100%, ' + Math.round(50 - (10 * treFr)) + '%))';
 
       }
 
@@ -378,7 +378,7 @@ function play() {
           varyLampColour(lampLightArr[i], bassFr, treFr, lowerMaxFr);
         }
 
-        document.body.style.background = 'linear-gradient(150deg, hsl(225, 100%, ' + Math.round(35 - (2 * bassFr)) + '%), hsl(10, 100%, ' + Math.round(35 - (2 * bassFr)) + '%))';
+        document.body.style.background = 'linear-gradient(150deg, hsl(225, 100%, ' + Math.round(35 - (2 * bassFr)) + '%), hsl(10, 100%, ' + Math.round(35 - (1.2 * bassFr)) + '%))';
 
       }
 
@@ -455,7 +455,7 @@ function play() {
       }
 
       if (sceneType === "city - night") {
-        if (bassFr > 8.5) {
+        if (bassFr + treFr > 13.5) {
           lampLightMesh.material.color.setRGB(Math.random(), Math.random(), Math.random());
           lampLightMesh.material.needsUpdate = true;
         }
