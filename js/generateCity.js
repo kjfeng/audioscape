@@ -1,8 +1,8 @@
 // generates the city scene
 
 // all the constants
-var nBlockX	= 20
-var nBlockZ	= 20
+var nBlockX	= 25
+var nBlockZ	= 25
 var blockSizeX	= 50
 var blockSizeZ	= 50
 var blockDensity= 10

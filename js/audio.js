@@ -2,7 +2,7 @@
 var sceneType = "city - day";
 
 // random hsl for later
-var lampDayH = 0.61;
+var lampDayH = 0.7875;
 var lampDayS = 1.0;
 var lampDayL = 0.5;
 
@@ -257,8 +257,8 @@ function play() {
 
             for (let i = 0; i < 4; i++) {
               topVertices[i].y *= (distance * 0.1);
-              if (topVertices[i].y < initialY) {
-                topVertices[i].y = initialY;
+              if (topVertices[i].y < 0.7 * initialY) {
+                topVertices[i].y = 0.7 * initialY;
               }
             }
 
@@ -271,10 +271,10 @@ function play() {
     function varyLampColour(lampLightMesh, bassFr, treFr, lowerMaxFr) {
       if (sceneType === "city - day") {
         let newLum = 0.5;
-        // let newLum = lampDayL + (bassFr / lowerMaxFr);
-        // // console.log(newLum);
+        newLum = lampDayL + (bassFr / 50 * lowerMaxFr);
+        // console.log(newLum);
 
-        lampLightMesh.material.color.setRGB(Math.random(), Math.random(), Math.random());
+        lampLightMesh.material.color.setHSL(lampDayH, lampDayS, newLum);
         lampLightMesh.material.needsUpdate = true;
       }
 
