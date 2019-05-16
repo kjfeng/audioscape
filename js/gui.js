@@ -55,7 +55,7 @@ if (guiEnabled) {
   //     showWireframe(value);
   //   });
 
-  let appearanceControls = gui.addFolder("Appearance");
+  // let appearanceControls = gui.addFolder("Appearance");
 
   // interactionControls
   //   .add(guiControls, "rotate")
@@ -81,7 +81,7 @@ if (guiEnabled) {
   //   .onChange(function(value) {
   //     movingSphere = value;
   //   });
-  appearanceControls
+  let sceneControls = gui
     .add(guiControls, "sceneType", ["city - day", "city - evening", "city - night", "nature"])
     .name("sceneType")
     .onChange(function(value) {
