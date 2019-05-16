@@ -1,6 +1,11 @@
 //initialise simplex noise instance
 var sceneType = "city - day";
+
 // random hsl for later
+var lampDayH = 0.61;
+var lampDayS = 1.0;
+var lampDayL = 0.5;
+
 var randomH1 = Math.random() * 100;
 var randomH1 = Math.random() * 100;
 var randomS1 = Math.random() * 100;
@@ -8,7 +13,7 @@ var randomS2 = Math.random() * 100;
 
 lastTime = performance.now();
 // the main visualiser function
-var vizInit = function (){
+var vizInit = function () {
 
   var file = document.getElementById("thefile");
   var audio = document.getElementById("audio");
@@ -196,19 +201,6 @@ function play() {
       var bassFr = modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8);
       var treFr = modulate(upperAvgFr, 0, 1, 0, 4);
 
-      // makeRoughGround(plane, modulate(upperAvgFr, 0, 1, 0.5, 4));
-      // makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
-
-
-      //   }
-      // }
-
-
-
-      // for (let i = 0; i < sidewalks.length; i++ ) {
-      //   varySidewalkSize(sidewalks[i], bassFr, treFr, 1);
-      // }
-
       // CITY
       if (sceneType === "city - day") {
         for (let i = 0; i < newBuildingsArr.length; i++ ) {
@@ -216,7 +208,7 @@ function play() {
         }
 
         for (let i = 0; i < lampLightArr.length; i++ ) {
-          varyLampColour(lampLightArr[i], bassFr, treFr);
+          varyLampColour(lampLightArr[i], bassFr, treFr, lowerMaxFr);
         }
       }
 
@@ -224,24 +216,6 @@ function play() {
         for (let i = 0; i < newBuildingsArr.length; i++ ) {
           varyTreeHeight(newBuildingsArr[i], bassFr, treFr, 50);
         }
-      }
-
-
-
-      let generateRandomHSL1 = function() {
-        let h = Math.random() * 100;
-        let s = Math.random() * 100;
-        let l = 75 - bassFr;
-        let colour = hsla(h, s, l);
-        return colour;
-      }
-
-      let generateRandomHSL2 = function() {
-        let h = Math.random() * 100;
-        let s = Math.random() * 100;
-        let l = 75 - bassFr;
-        let colour = hsla(h, s, l);
-        return colour;
       }
 
       // document.body.style.background = 'linear-gradient(150deg, hsl(' + Math.random() * 100 + ',' + Math.random() * 100 + ',' + Math.random() * 100 + '), #000000)';
@@ -294,10 +268,18 @@ function play() {
         mesh.geometry.computeFaceNormals();
     }
 
-    function varyLampColour(lampLightMesh, bassFr, treFr) {
+    function varyLampColour(lampLightMesh, bassFr, treFr, lowerMaxFr) {
+      if (sceneType === "city - day") {
+        let newLum = 0.5;
+        // let newLum = lampDayL + (bassFr / lowerMaxFr);
+        // // console.log(newLum);
 
-      lampLightMesh.material.color.setRGB(Math.random(), Math.random(), Math.random());
-      lampLightMesh.material.needsUpdate = true;
+        lampLightMesh.material.color.setRGB(Math.random(), Math.random(), Math.random());
+        lampLightMesh.material.needsUpdate = true;
+      }
+
+
+
     }
 
     function varyTreeHeight(mesh, bassFr, treFr, initialY) {
