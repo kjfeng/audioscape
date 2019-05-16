@@ -138,7 +138,7 @@ function play() {
       }
 
       // floor creation
-      var planeGeometry = new THREE.PlaneGeometry(800, 800, 20, 20);
+      var planeGeometry = new THREE.PlaneGeometry(8000, 8000, 200, 200);
       if (sceneType === 'nature') {
         var planeMaterial = new THREE.MeshLambertMaterial({
             color: 0x266a2e,

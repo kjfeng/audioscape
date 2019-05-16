@@ -444,6 +444,7 @@ let generateNature = function(buildingsArray) {
       //   alphaTest: 0.5,
       // });
       var material = new THREE.MeshBasicMaterial({
+        transparent: true,
         map : texture,
         // color: 0x4ac4b6,
         // vertexColors : THREE.VertexColors
@@ -451,7 +452,7 @@ let generateNature = function(buildingsArray) {
       let randomGray = Math.random() + 0.5;
       if (randomGray > 1) randomGray = 1;
       // material.color.setRGB(randomGray, randomGray, randomGray);
-      var buildingMesh = new THREE.Mesh(getCone(), material); // new THREE.ConeGeometry( 1, 1, 1 )
+      var buildingMesh = new THREE.Mesh(getCone(), material); // material
       // put a random position
       buildingMesh.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
       buildingMesh.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
@@ -467,6 +468,18 @@ let generateNature = function(buildingsArray) {
       cityGeometry.mergeMesh(buildingMesh);
       buildingsArray.push(buildingMesh);
   }
+
+  var geometry = new THREE.SphereGeometry( 32, 32, 32 );
+  var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+
+  for (var i = 0; i < 100; i++ ) {
+    var sphere = new THREE.Mesh( geometry, material );
+    sphere.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
+    sphere.position.y = Math.floor( Math.random() * 200 - 100 ) + 30;
+    sphere.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
+
+    buildingsArray.push( sphere );
+  }
   return buildingsArray;
 }
 
@@ -481,16 +494,23 @@ var context = canvas.getContext('2d');
   // plain it in some shade of gray
   // let grayRand = Math.round(Math.random() * 255);
   // let randomGray = rgb(redRand, blueRand, greenRand);
-  context.fillStyle = 'rgb('+ 34 +', '+ 139 +', '+ 34 +')'; //34,139,34
-  context.fillRect( 0, 0, 32, 64 );
+  context.fillStyle = 'rgba('+ 34 +', '+ 139 +', '+ 34 + ', '+ 0 + ')'; //34,139,34
+  context.fillRect( 0, 0, 128, 128); // 32, 64
   // draw the window rows - with a small noise to simulate light variations in each room
-  for (var y = 2; y < 256; y += 1 ) {
+  for (var y = 2; y < 128; y += 1 ) {
       for (var x = 0; x < 128; x += 1 ) {
           var Rvalue   = 34 + Math.floor( Math.random() * 64 );
           var Gvalue   = 139 + Math.floor( Math.random() * 64 );
           var Bvalue   = 34 + Math.floor( Math.random() * 64 );
-          context.fillStyle = 'rgb(' + [Rvalue, Gvalue, Bvalue].join( ',' )  + ')';
-          context.fillRect( x, y, 2, 1 );
+          var avalue = Math.random();
+          if (avalue < 0.30) {
+            avalue = 0;
+          }
+          else {
+            avalue = 1;
+          }
+          context.fillStyle = 'rgba(' + [Rvalue, Gvalue, Bvalue, avalue].join( ',' )  + ')';
+          context.fillRect( x, y, 1, 1 );
       }
   }
 
