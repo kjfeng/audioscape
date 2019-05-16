@@ -35,40 +35,6 @@ var vizInit = function () {
     play();
   }
 
-    // var filename = 'objects/cheetah.obj'; // all obj files are in the obj folder
-
-    // const manager = new THREE.LoadingManager();
-
-    // // load using the three js loading manager plus pass reference to current mesh
-    // const loader = new OBJLoader(manager);
-    // const mesh = new THREE.Mesh();
-
-    // loader.load(filename, function(vertices, faces) {
-    //     mesh.buildFromVerticesAndFaces(vertices, faces);
-    // });
-    // scene.add( mesh );
-
-    // var mesh = null;
-
-    // var mtlLoader = new THREE.MTLLoader();
-    // mtlLoader.setPath( "objects/cheetah" );
-    // mtlLoader.load( 'cheetah.obj', function( materials ) {
-
-    //   materials.preload();
-
-    //   var objLoader = new THREE.OBJLoader();
-    //   objLoader.setMaterials( materials );
-    //   objLoader.setPath( "objects/cheetah" );
-    //   objLoader.load( 'cheetah.obj', function ( object ) {
-
-    //     mesh = object;
-    //     mesh.position.y = -50;
-    //     scene.add( mesh );
-
-    //   } );
-
-    // } );
-
 
 function play() {
     var context = new AudioContext();
@@ -447,7 +413,7 @@ function play() {
       }
 
       if (sceneType === "city - evening") {
-        let newH = 0.0875 + (bassFr / 300 * lowerMaxFr);
+        let newH = 0.0875 + (bassFr / 200 * lowerMaxFr);
         // console.log(newLum);
 
         lampLightMesh.material.color.setHSL(newH, 1, 0.5);
