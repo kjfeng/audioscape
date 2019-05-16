@@ -378,7 +378,7 @@ function play() {
           varyLampColour(lampLightArr[i], bassFr, treFr, lowerMaxFr);
         }
 
-        document.body.style.background = 'linear-gradient(150deg, hsl(215, 100%, 0%), hsl(225, 100%, ' + Math.round(35 - (2 * bassFr)) + '%))';
+        document.body.style.background = 'linear-gradient(150deg, hsl(225, 100%, ' + Math.round(35 - (2 * bassFr)) + '%), hsl(10, 100%, ' + Math.round(35 - (2 * bassFr)) + '%))';
 
       }
 
