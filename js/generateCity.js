@@ -563,6 +563,10 @@ let generateNature = function(buildingsArray) {
   // texture.repeat.set( 25, 25 );
   // texture.anisotropy = 16;
   // texture.needsUpdate = true;
+  var geometry = new THREE.SphereGeometry( 32, 32, 32 );
+  var material = new THREE.MeshBasicMaterial( {
+     color: 0xffff00, //color: 0x111111, envMap: mirrorCamera.renderTarget, // 
+  } );
 
   // make 10 000 buildings
   for (var i = 0; i < 500; i++ ) {
@@ -578,6 +582,7 @@ let generateNature = function(buildingsArray) {
       // });
       var material = new THREE.MeshBasicMaterial({
         map : texture,
+        transparent : true,
         // color: 0x4ac4b6,
         // vertexColors : THREE.VertexColors
       });
@@ -600,6 +605,14 @@ let generateNature = function(buildingsArray) {
       cityGeometry.mergeMesh(buildingMesh);
       buildingsArray.push(buildingMesh);
   }
+
+  for (var i = 0; i < 100; i++ ) {
+    var sphere = new THREE.Mesh( geometry, material );
+    sphere.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
+    sphere.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
+    sphere.position.y = Math.floor( Math.random() * 200 - 100 ) + 30;
+    buildingsArray.push( sphere );
+  }
   return buildingsArray;
 }
 
@@ -614,7 +627,7 @@ var context = canvas.getContext('2d');
   // plain it in some shade of gray
   // let grayRand = Math.round(Math.random() * 255);
   // let randomGray = rgb(redRand, blueRand, greenRand);
-  context.fillStyle = 'rgb('+ 34 +', '+ 139 +', '+ 34 +')'; //34,139,34
+  context.fillStyle = 'rgba('+ 34 +', '+ 139 +', '+ 34 + ', '+ 0 + ')'; //34,139,34
   context.fillRect( 0, 0, 32, 64 );
   // draw the window rows - with a small noise to simulate light variations in each room
   for (var y = 2; y < 256; y += 1 ) {
@@ -622,7 +635,14 @@ var context = canvas.getContext('2d');
           var Rvalue   = 34 + Math.floor( Math.random() * 64 );
           var Gvalue   = 139 + Math.floor( Math.random() * 64 );
           var Bvalue   = 34 + Math.floor( Math.random() * 64 );
-          context.fillStyle = 'rgb(' + [Rvalue, Gvalue, Bvalue].join( ',' )  + ')';
+          var avalue = Math.random();
+          if (avalue < 0.3) {
+            avalue = 0;
+          }
+          else {
+            avalue = 1;
+          }
+          context.fillStyle = 'rgba(' + [Rvalue, Gvalue, Bvalue, avalue].join( ',' )  + ')';
           context.fillRect( x, y, 2, 1 );
       }
   }
