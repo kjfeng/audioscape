@@ -53,7 +53,16 @@ function play() {
     camera.lookAt(scene.position);
     scene.add(camera);
 
-    scene.fog	= new THREE.FogExp2( 0xd0e0f0, 0.0020 );
+    if (sceneType === "city - day") {
+      scene.fog	= new THREE.FogExp2( 0xd0e0f0, 0.0020 );
+    }
+
+    if (sceneType === "city - evening") {
+      scene.fog	= new THREE.FogExp2( 0xafc5db, 0.0020 );
+    }
+
+
+
 
     var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -92,30 +101,32 @@ function play() {
     var ambientLight = new THREE.AmbientLight(0xaaaaaa);
     scene.add(ambientLight);
 
+    sidewalks = generateSidewalks(sidewalksEmpty);
+    for (let i = 0; i < sidewalks.length; i++) {
+      scene.add(sidewalks[i]);
+    }
+
+    let cityGround = generateSquareGround();
+    scene.add(cityGround);
+
+    let lamps3d = generateLampPoles();
+    scene.add(lamps3d);
+
+    var lampheads = [];
+    lampLightArr = generateLampLights(lampheads);
+    for (let i = 0; i < lampLightArr.length; i++) {
+      scene.add(lampLightArr[i]);
+    }
+
     // CONDITIONALS FOR SCENES
     if (sceneType === "city - day") {
 
-        sidewalks = generateSidewalks(sidewalksEmpty);
-        for (let i = 0; i < sidewalks.length; i++) {
-          scene.add(sidewalks[i]);
-        }
+
 
         let buildings = [];
-        newBuildingsArr = generateBlockCity(buildings);
+        newBuildingsArr = generateBlockCityDay(buildings);
         for (let i = 0; i < newBuildingsArr.length; i++) {
           scene.add(newBuildingsArr[i]);
-        }
-
-        let cityGround = generateSquareGround();
-        scene.add(cityGround);
-
-        let lamps3d = generateLampPoles();
-        scene.add(lamps3d);
-
-        var lampheads = [];
-        lampLightArr = generateLampLights(lampheads);
-        for (let i = 0; i < lampLightArr.length; i++) {
-          scene.add(lampLightArr[i]);
         }
 
         var ambientLight = new THREE.AmbientLight(0xaaaaaa);
@@ -124,7 +135,6 @@ function play() {
         var spotLight = new THREE.SpotLight(0xffffff);
         spotLight.intensity = 0.9;
         spotLight.position.set(-10, 1000, 20);
-        // spotLight.lookAt(cube); // ball
         spotLight.castShadow = true;
         scene.add(spotLight);
     }
@@ -146,7 +156,8 @@ function play() {
             wireframe: false
         });
       }
-
+      
+      // add forest floor
       var floor = new THREE.Mesh(planeGeometry, planeMaterial);
       floor.rotation.x = -0.5 * Math.PI;
       floor.position.set(0, 0, 0);
@@ -203,13 +214,19 @@ function play() {
 
       // CITY
       if (sceneType === "city - day") {
+        // buildings
         for (let i = 0; i < newBuildingsArr.length; i++ ) {
           varyBuildingHeight(newBuildingsArr[i], bassFr, treFr, 1);
         }
-
+        // lamps
         for (let i = 0; i < lampLightArr.length; i++ ) {
           varyLampColour(lampLightArr[i], bassFr, treFr, lowerMaxFr);
         }
+        // sky
+        // document.body.style.background = 'linear-gradient(150deg, hsl(209, 100%, 94%), hsl(' + 200 + ',' + 90 + '%,' + 100 - (6 * bassFr) + '%))';
+        document.body.style.background = 'linear-gradient(150deg, hsl(209, 100%, 94%), hsl(' + 200 + ',' + 90 + '%,' + Math.round(100 - (3 * bassFr)) + '%))';
+        console.log(6 * bassFr);
+
       }
 
       if (sceneType === "nature") {
@@ -217,8 +234,6 @@ function play() {
           varyTreeHeight(newBuildingsArr[i], bassFr, treFr, 50);
         }
       }
-
-      // document.body.style.background = 'linear-gradient(150deg, hsl(' + Math.random() * 100 + ',' + Math.random() * 100 + ',' + Math.random() * 100 + '), #000000)';
 
 
       // CONTROLS AUTO ROTATION
