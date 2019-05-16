@@ -47,7 +47,7 @@ var vizInit = function () {
     //     mesh.buildFromVerticesAndFaces(vertices, faces);
     // });
     // scene.add( mesh );
-    
+
     // var mesh = null;
 
     // var mtlLoader = new THREE.MTLLoader();
@@ -136,42 +136,41 @@ function play() {
     var ambientLight = new THREE.AmbientLight(0xaaaaaa);
     scene.add(ambientLight);
 
-    sidewalks = generateSidewalks(sidewalksEmpty);
-    for (let i = 0; i < sidewalks.length; i++) {
-      scene.add(sidewalks[i]);
-    }
 
-    let cityGround = generateSquareGround();
-    scene.add(cityGround);
-
-    let lamps3d = generateLampPoles();
-    scene.add(lamps3d);
-
-    var lampheads = [];
-    lampLightArr = generateLampLights(lampheads);
-    for (let i = 0; i < lampLightArr.length; i++) {
-      scene.add(lampLightArr[i]);
-    }
 
     // CONDITIONALS FOR SCENES
     if (sceneType === "city - day") {
 
+      sidewalks = generateSidewalks(sidewalksEmpty);
+      for (let i = 0; i < sidewalks.length; i++) {
+        scene.add(sidewalks[i]);
+      }
 
+      let cityGround = generateSquareGround();
+      scene.add(cityGround);
 
-        let buildings = [];
-        newBuildingsArr = generateBlockCityDay(buildings);
-        for (let i = 0; i < newBuildingsArr.length; i++) {
-          scene.add(newBuildingsArr[i]);
-        }
+      let lamps3d = generateLampPoles();
+      scene.add(lamps3d);
 
-        var ambientLight = new THREE.AmbientLight(0xaaaaaa);
-        scene.add(ambientLight);
+      var lampheads = [];
+      lampLightArr = generateLampLights(lampheads);
+      for (let i = 0; i < lampLightArr.length; i++) {
+        scene.add(lampLightArr[i]);
+      }
+      let buildings = [];
+      newBuildingsArr = generateBlockCityDay(buildings);
+      for (let i = 0; i < newBuildingsArr.length; i++) {
+        scene.add(newBuildingsArr[i]);
+      }
 
-        var spotLight = new THREE.SpotLight(0xffffff);
-        spotLight.intensity = 0.9;
-        spotLight.position.set(-10, 1000, 20);
-        spotLight.castShadow = true;
-        scene.add(spotLight);
+      var ambientLight = new THREE.AmbientLight(0xaaaaaa);
+      scene.add(ambientLight);
+
+      var spotLight = new THREE.SpotLight(0xffffff);
+      spotLight.intensity = 0.9;
+      spotLight.position.set(-10, 1000, 20);
+      spotLight.castShadow = true;
+      scene.add(spotLight);
     }
 
     if (sceneType === "nature") {
@@ -191,7 +190,7 @@ function play() {
             wireframe: false
         });
       }
-      
+
       // add forest floor
       var floor = new THREE.Mesh(planeGeometry, planeMaterial);
       floor.rotation.x = -0.5 * Math.PI;
