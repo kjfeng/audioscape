@@ -1,4 +1,4 @@
-//initialise simplex noise instance
+// initialize scene selection variable
 var sceneType = "city - day";
 
 // random hsl for later
@@ -46,11 +46,22 @@ function play() {
     var bufferLength = analyser.frequencyBinCount;
     var dataArray = new Uint8Array(bufferLength);
 
+    // info
+    var info = document.createElement( 'div' );
+    info.style.position = 'absolute';
+    info.style.left = '0';
+    info.style.top = '15px';
+    info.style.width = '100%';
+    info.style.color = 'rgba(0,0,64,0.5)';
+    info.style.textAlign = 'center';
+    info.textContent = 'click and hold to move forward';
+    document.body.appendChild( info );
+
     //here comes the webgl
     var scene = new THREE.Scene();
     var group = new THREE.Group();
     var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 3000);
-    camera.position.set(0,80,300);
+    camera.position.set(25, 50, 0);
     camera.lookAt(scene.position);
     scene.add(camera);
 
@@ -66,35 +77,13 @@ function play() {
       scene.fog	= new THREE.FogExp2( 0x3a3a3a, 0.0020 );
     }
 
-
+    if (sceneType === "nature") {
+      scene.fog	= new THREE.FogExp2( 0xd0e0f0, 0.0030 );
+    }
 
 
     var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-
-
-
-
-    // // floor
-    // var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    // plane.rotation.x = -0.5 * Math.PI;
-    // plane.position.set(0, 0, 0);
-    // group.add(plane);
-
-    // var plane2 = new THREE.Mesh(planeGeometry, planeMaterial);
-    // plane2.rotation.x = -0.5 * Math.PI;
-    // plane2.position.set(0, -30, 0);
-    // group.add(plane2);
-
-    // // forest floor creation and material
-    // var planeGeometry = new THREE.PlaneGeometry(8000, 8000, 200, 200);
-    // var planeMaterial = new THREE.MeshLambertMaterial({
-    //     color: 0xff0000,
-    //     side: THREE.DoubleSide,
-    //     // wireframe: true
-    // });
-
-    // forest floor
 
 
 
@@ -105,7 +94,6 @@ function play() {
 
     var ambientLight = new THREE.AmbientLight(0xaaaaaa);
     scene.add(ambientLight);
-
 
 
     // CONDITIONALS FOR SCENES
@@ -267,16 +255,16 @@ function play() {
 
     }
 
-    var orbitControls = new THREE.OrbitControls(camera);
-    orbitControls.autoRotate = true;
+    // ORBITAL CONTROLS
+    // var orbitControls = new THREE.OrbitControls(camera);
+    // orbitControls.autoRotate = true;
 
     // FIRST PERSON CONTROLS
-    // controls = new THREE.FirstPersonControls( camera );
-    // controls.movementSpeed = 20;
-    // controls.lookSpeed = 0.05;
-    // controls.lookVertical = true;
+    var controls = new THREE.FirstPersonControls( camera );
+    controls.movementSpeed = 20;
+    controls.lookSpeed = 0.08;
+    controls.lookVertical = true;
 
-    // scene.add(group);
 
     document.getElementById('out').appendChild(renderer.domElement);
 
@@ -359,7 +347,7 @@ function play() {
       // group.rotation.y += 0.005;
       renderer.render(scene, camera);
       requestAnimationFrame(render);
-      requestAnimationFrame(animate);
+      requestAnimationFrame(animate(controls));
     }
 
     function onWindowResize() {
@@ -369,11 +357,11 @@ function play() {
     }
 
     function varyBuildingHeight(mesh, bassFr, treFr, initialY) {
-        // mesh.geometry.vertices.forEach(function (vertex, i) {
+
             var offset = mesh.geometry.parameters.width;
             var amp = 7;
             var time = window.performance.now();
-            // vertex = mesh.geometry.vertices[1];
+
             var topVertices = [
               mesh.geometry.vertices[0],
               mesh.geometry.vertices[1],
@@ -383,9 +371,8 @@ function play() {
             for (let i = 0; i < 4; i++) {
               topVertices[i].y = initialY;
             }
-            // height = mesh.geometry.parameters.height;
+            // just in case we need rf
             var rf = 0.00001;
-            // var distance = (offset + bassFr ) + noise.noise3D(topVertices[0].x + time *rf*7, topVertices[0].y +  time*rf*8, topVertices[0].z + time*rf*9) * amp * treFr;
 
             var distance = bassFr + treFr;
 
@@ -427,8 +414,6 @@ function play() {
         }
 
       }
-
-
 
     }
 
@@ -485,10 +470,9 @@ window.onload = vizInit();
 
 document.body.addEventListener('touchend', function(ev) { context.resume(); });
 
-function animate() {
-
+function animate(controls) {
     var time = performance.now() / 1000;
-
+    controls.update(time - lastTime);
     lastTime = time;
 }
 
