@@ -1,5 +1,3 @@
-// generates the city scene
-
 // all the constants
 var nBlockX	= 25
 var nBlockZ	= 25
@@ -46,12 +44,11 @@ let generateVanillaCity = function(buildingsArray) {
   // more texture stuff
   // generate the texture
   var texture = new THREE.Texture( generateTexture() );
-  // texture.anisotropy = renderer.getMaxAnisotropy();
   texture.needsUpdate = true;
 
   // make 10 000 buildings
   for (var i = 0; i < 10000; i++ ) {
-      // material.color.setRGB(Math.random(), Math.random(), Math.random());
+
       // build the material
       var material = new THREE.MeshLambertMaterial({
         map : texture,
@@ -67,7 +64,6 @@ let generateVanillaCity = function(buildingsArray) {
       // put a random rotation
       buildingMesh.rotation.y = Math.random()*Math.PI*2;
       // put a random scale
-      // MODIFY THIS FOR BUILDING SIZE?
       buildingMesh.scale.x    = Math.random() * Math.random() * Math.random() * Math.random() * 50 + 10;
       buildingMesh.scale.y    = (Math.random() * Math.random() * Math.random() * buildingMesh.scale.x) * 8 + 8;
       buildingMesh.scale.z    = buildingMesh.scale.x;
@@ -77,7 +73,7 @@ let generateVanillaCity = function(buildingsArray) {
       buildingsArray.push(buildingMesh);
       // group.add(buildingMesh);
   }
-  // let cityMesh = new THREE.Mesh(cityGeometry);
+
   return buildingsArray;
 }
 
@@ -88,7 +84,6 @@ let generateBlockCityDay = function(buildingsArray) {
   // more texture stuff
   // generate the texture
   var texture = new THREE.Texture( generateTexture() );
-  // texture.anisotropy = renderer.getMaxAnisotropy();
   texture.needsUpdate = true;
 
   // make 10 000 buildings
@@ -257,24 +252,6 @@ let generateLampPoles	= function() {
         lightPosition.z		+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
 
         lightsGeometry.vertices.push(lightPosition );
-        //////////////////////////////////////////////////////////////////////////////////
-        //		head light						//   REMOVED
-        //////////////////////////////////////////////////////////////////////////////////
-
-        // // set base position
-        // lampMesh.position.copy(position)
-        // lampMesh.position.y	= sidewalkH+lampH
-        // // add poll offset
-        // lampMesh.scale.set(0.2,0.2,0.2)
-        // // colorify
-        // for(var i = 0; i < lampMesh.geometry.faces.length; i++ ) {
-        //   lampMesh.geometry.faces[i].color.set('white' );
-        // }
-        // // set position for block
-        // lampMesh.position.x	+= (blockX+0.5-nBlockX/2)*blockSizeX
-        // lampMesh.position.z	+= (blockZ+0.5-nBlockZ/2)*blockSizeZ
-        // // merge it with cityGeometry - very important for performance
-        // lampsGeometry.mergeMesh( lampMesh )
 
         //////////////////////////////////////////////////////////////////////////////////
         //		pole								//
@@ -356,16 +333,11 @@ let generateLampLights	= function(lampheads) {
 
   var lampGeometry= new THREE.BoxGeometry(1,1,1)
   lampGeometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 0.5, 0 ) );
-  // // build material
-  // var lampHeadMaterial	= new THREE.MeshLambertMaterial({
-  //   color	: 0xffffff
-  // });
 
 
   for( var blockZ = 0; blockZ < nBlockZ; blockZ++) {
     for( var blockX = 0; blockX < nBlockX; blockX++) {
-      // lampMesh.position.x	= 0
-      // lampMesh.position.z	= 0
+
       function addLamp(position) {
         //////////////////////////////////////////////////////////////////////////////////
         //		head light						//
@@ -421,7 +393,6 @@ let generateLampLights	= function(lampheads) {
 
 
 let generateSidewalks	= function( sidewalksArr ) {
-  // var sidewalkMesh = new THREE.Mesh(getBox());
   var sidewalksGeometry= new THREE.Geometry();
 
   for ( var blockZ = 0; blockZ < nBlockZ; blockZ++ ) {
@@ -449,24 +420,6 @@ let generateSidewalks	= function( sidewalksArr ) {
   // var sidewalksMesh	= new THREE.Mesh( sidewalksGeometry, material );
   return sidewalksArr;
 }
-
-// this.createSquareCity	= function(){
-//   var object3d		= new THREE.Object3D()
-//
-//   var lampsMesh		= this.createSquareLamps()
-//   object3d.add(lampsMesh)
-//
-//   var sidewalksMesh	= this.createSquareSideWalks()
-//   object3d.add(sidewalksMesh)
-//
-//   var buildingsMesh	= this.createSquareBuildings()
-//   object3d.add(buildingsMesh)
-//
-//   var groundMesh	= this.createSquareGround()
-//   object3d.add(groundMesh)
-//
-//   return object3d
-// }
 
 
 function generateTexture() {
@@ -557,32 +510,13 @@ let generateNature = function(buildingsArray) {
   var texture = new THREE.Texture( generateTreeTexture() );
   // texture.anisotropy = renderer.getMaxAnisotropy();
   texture.needsUpdate = true;
-  // var loader = new THREE.TextureLoader();
-  // var texture = loader.load( "textures/tree-texture.jpg" ); // grasslight-big.jpg
-  // texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-  // texture.repeat.set( 25, 25 );
-  // texture.anisotropy = 16;
-  // texture.needsUpdate = true;
-  var geometry = new THREE.SphereGeometry( 32, 32, 32 );
-  var material = new THREE.MeshBasicMaterial( {
-     color: 0xffff00, //color: 0x111111, envMap: mirrorCamera.renderTarget, // 
-  } );
+
 
   // make 10 000 buildings
   for (var i = 0; i < 500; i++ ) {
-      // material.color.setRGB(Math.random(), Math.random(), Math.random());
-      // build the material
-      // material = new THREE.MeshPhongMaterial({
-      //   color: 0xaa2929,
-      //   specular: 0x030303,
-      //   wireframeLinewidth: 2,
-      //   map: texture,
-      //   side: THREE.DoubleSide,
-      //   alphaTest: 0.5,
-      // });
+
       var material = new THREE.MeshBasicMaterial({
         map : texture,
-        transparent : true,
         // color: 0x4ac4b6,
         // vertexColors : THREE.VertexColors
       });
@@ -605,14 +539,6 @@ let generateNature = function(buildingsArray) {
       cityGeometry.mergeMesh(buildingMesh);
       buildingsArray.push(buildingMesh);
   }
-
-  for (var i = 0; i < 100; i++ ) {
-    var sphere = new THREE.Mesh( geometry, material );
-    sphere.position.x = Math.floor( Math.random() * 200 - 100 ) * 10;
-    sphere.position.z = Math.floor( Math.random() * 200 - 100 ) * 10;
-    sphere.position.y = Math.floor( Math.random() * 200 - 100 ) + 30;
-    buildingsArray.push( sphere );
-  }
   return buildingsArray;
 }
 
@@ -622,12 +548,8 @@ canvas.width = 32;
 canvas.height = 64;
 var context = canvas.getContext('2d');
 
-// make_base(context);
 
-  // plain it in some shade of gray
-  // let grayRand = Math.round(Math.random() * 255);
-  // let randomGray = rgb(redRand, blueRand, greenRand);
-  context.fillStyle = 'rgba('+ 34 +', '+ 139 +', '+ 34 + ', '+ 0 + ')'; //34,139,34
+  context.fillStyle = 'rgb('+ 34 +', '+ 139 +', '+ 34 +')'; // 34,139,34
   context.fillRect( 0, 0, 32, 64 );
   // draw the window rows - with a small noise to simulate light variations in each room
   for (var y = 2; y < 256; y += 1 ) {
@@ -635,14 +557,7 @@ var context = canvas.getContext('2d');
           var Rvalue   = 34 + Math.floor( Math.random() * 64 );
           var Gvalue   = 139 + Math.floor( Math.random() * 64 );
           var Bvalue   = 34 + Math.floor( Math.random() * 64 );
-          var avalue = Math.random();
-          if (avalue < 0.3) {
-            avalue = 0;
-          }
-          else {
-            avalue = 1;
-          }
-          context.fillStyle = 'rgba(' + [Rvalue, Gvalue, Bvalue, avalue].join( ',' )  + ')';
+          context.fillStyle = 'rgb(' + [Rvalue, Gvalue, Bvalue].join( ',' )  + ')';
           context.fillRect( x, y, 2, 1 );
       }
   }
